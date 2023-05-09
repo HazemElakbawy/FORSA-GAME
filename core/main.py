@@ -43,6 +43,7 @@ def init():
     glEnable(GL_DEPTH_TEST)
 
 
+
 def Timer(v):
     draw()
     glutTimerFunc(time_interval, Timer, 1)
@@ -203,6 +204,9 @@ def load_setup_textures():
     # TODO: Load all textures here
     loadHelper("../World Assets/world.png", 0)
     loadHelper("../World Assets/porche_911.png", 1)
+    glEnable(GL_BLEND)  # FOR BLENDING
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)  # FOR BLENDING
+
     # loadHelper("chess.png", 2)
     # loadHelper("chess.png", 3)
     # loadHelper("chess.png", 4)
@@ -219,7 +223,7 @@ def drawTextures(color: tuple = (1, 1, 1)):
     # TODO: Draw all textures here [ WORLD , MAIN CAR , OTHER CARS(12)]
     glColor(color[0], color[1], color[2])
     drawHelper(0, world.left, world.right, world.top, world.bottom)
-    drawHelper(1, car.left, car.right, car.top, car.bottom)
+    # drawHelper(1, car.left, car.right, car.top, car.bottom)
 
     # glVertex3f(x/2, y/2, 0)
     # glVertex3f(x/2, -y/2, 0)
@@ -420,11 +424,18 @@ class main_car:
     def __init__(self, x, y, trans_x, trans_y, theta, rgb):
         self.x = x
         self.y = y
-        self.right = x/2
-        self.left = -x/2
-        self.top = y/2
-        self.bottom = -y/2
+        self.right = trans_x + (x / 2)
+        self.left = trans_x - (x / 2)
+        self.top = trans_y + (y / 2)
+        self.bottom = trans_y - (y / 2)
+
+        glPushMatrix()
+        glTranslatef(trans_x, trans_y, 0)
+        glRotatef(theta, 0, 0, 1)
+        drawHelper(1, -x/2, x/2, y/2, -y/2)
+        glPopMatrix()
         glColor3f(rgb[0], rgb[1], rgb[2])
+
         glPushMatrix()
         glTranslatef(trans_x, trans_y, 0)
         glRotatef(theta, 0, 0, 1)
@@ -435,6 +446,9 @@ class main_car:
         glVertex3f(-x/2, y/2, 0)
         glEnd()
         glPopMatrix()
+
+
+
 
 
 def draw():
