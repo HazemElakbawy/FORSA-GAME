@@ -18,16 +18,10 @@ UPPER_LEFT_ROAD_WIDTH = UPPER_RIGHT_ROAD_WIDTH = 250
 # CAR PROPERTIES
 CAR_WIDTH = 50
 CAR_LENGTH = 25
-<<<<<<< HEAD
-CAR_SPEED = 0.02
-CAR_ROTATION_SPEED = 0.5
-
+CAR_SPEED = 0.03
+CAR_ROTATION_SPEED = 0.6
 time_interval = 1
 keys_pressed = set()
-=======
-CAR_SPEED = 0.28  # Changes on linux
-CAR_ROTATION_SPEED = 0.18
->>>>>>> refs/remotes/origin/main
 car_pos = [100, 250]
 car_angle = 0.0
 car_vel = [0.0, 0.0]
@@ -113,6 +107,7 @@ def keyboard_up(key, x, y):
 # * ========================= Rectangle ( width, height ,  x ,  y ) ========================= * #
 # * ========================================================================================= * #
 # * ========================================================================================= * #
+
 # ! World Rectangle
 world = Rectangle(WINDOW_WIDTH, WINDOW_HEIGHT, 0, 0)
 
@@ -224,7 +219,6 @@ def drawTextures(color: tuple = (1, 1, 1)):
     # TODO: Draw all textures here [ WORLD , MAIN CAR , OTHER CARS(12)]
     glColor(color[0], color[1], color[2])
     drawHelper(0, world.left, world.right, world.top, world.bottom)
-    glBindTexture(GL_TEXTURE_2D, -1)
     drawHelper(1, car.left, car.right, car.top, car.bottom)
 
     # glVertex3f(x/2, y/2, 0)
@@ -244,29 +238,15 @@ def drawTextures(color: tuple = (1, 1, 1)):
 # * ========================================================================================================= * #
 
 
-<<<<<<< HEAD
 # * ========================================================================================================= * #
 # * ========================================================================================================= * #
 # * ======================================= COLLISION PART ================================================== * #
 # * ========================================================================================================= * #
 # * ========================================================================================================= * #
-=======
 def draw():
     global car_pos, car_angle, car_vel, keys_pressed, obstacle_speed
     glClearColor(0.0, 0.0, 0.0, 0.0)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-
-    rect_L1_1.drawRectangle((0, 0, 1))
-
-    rect_L2_1.drawRectangle((0, 1, 0))
-
-    rect_L2_2.drawRectangle((1, 0, 0))
-
-    rect_L3_1.drawRectangle((0, 1, 1))
-
-    rect_L3_2.drawRectangle((1, 1, 0))
-
-    rect_L3_3.drawRectangle((1, 0, 1))
 
     # * ========================= draw cars ========================= * #
     obs_list = [car_Obj_1_0, car_Obj_1_1, car_Obj_1_2,
@@ -319,7 +299,6 @@ def draw():
 
     glutSwapBuffers()
 
->>>>>>> refs/remotes/origin/main
 
 def obstacle_collision(ob):
     global car_pos, car_vel, car_angle
@@ -463,8 +442,6 @@ def draw():
     glClearColor(0.0, 0.0, 0.0, 0.0)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
-    # * ========================= draw cars ========================= * #
-
     # * ========================= Draw cars ========================= * #
     obs_list = [car_Obj_1_0, car_Obj_1_1, car_Obj_1_2,
                 car_Obj_2_0, car_Obj_2_1, car_Obj_2_2,
@@ -515,7 +492,6 @@ def draw():
     wall_collision()
     # arrival_line()
     drawTextures((1, 1, 1))
-
     rect_L1_1.drawRectangle()
     rect_L2_1.drawRectangle()
     rect_L2_2.drawRectangle()
