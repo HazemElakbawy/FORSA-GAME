@@ -201,8 +201,8 @@ def load_setup_textures():
     glEnable(GL_TEXTURE_2D)
     glGenTextures(len(textureIdentifiers), textureIdentifiers)
     # TODO: Load all textures here
-    loadHelper("World Assets/world.png", 0)
-    loadHelper("World Assets/porche_911.png", 1)
+    loadHelper("../World Assets/world.png", 0)
+    loadHelper("../World Assets/porche_911.png", 1)
     # loadHelper("chess.png", 2)
     # loadHelper("chess.png", 3)
     # loadHelper("chess.png", 4)
