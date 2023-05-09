@@ -12,7 +12,6 @@ class Car_Model:
         self.car_Direction = car_Direction*obstacle_speed
 
     def draw_car(self):
-        glLoadIdentity()
         glBegin(GL_QUADS)
         glVertex(self.left, self.bottom, 0)
         glVertex(self.right, self.bottom, 0)
