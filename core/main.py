@@ -543,7 +543,7 @@ def main():
 
 
 main()
-
+# this my first github contribution
 # def obstacle_collision(ob):
 #     # global
 #     car_face = car_pos[0] + CAR_WIDTH / 2 * math.cos(math.radians(car_angle))
