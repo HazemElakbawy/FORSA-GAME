@@ -1,6 +1,6 @@
 # FORSA-GAME
 ------------------
-FORSA Game is mainly named "FORSA" aftere the famous Game that called "FORZA".
+FORSA Game is mainly named "FORSA" after the famous Game that called "FORZA".
 <br> We are happy to share this Beta-Version of our new game with the world to explore it and have some fun playing it.
 <br> We enjoy helping you and learning new technologies, and experiences to move forward.
 
