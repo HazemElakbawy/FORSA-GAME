@@ -12,12 +12,12 @@ time_interval = 1
 keys_pressed = set()
 CAR_WIDTH = 50
 CAR_LENGTH = 25
-CAR_SPEED = 0.0028
+CAR_SPEED = 0.0028  # Changes on linux
 CAR_ROTATION_SPEED = 0.18
 car_pos = [100, 250]
 car_angle = 0.0
 car_vel = [0.0, 0.0]
-obstacle_speed = 0.2
+obstacle_speed = 0.2  # Changes on linux
 
 # * ========================= car model ( left, bottom , right ,  top , direction ) ========================= * #
 # road 1
@@ -155,10 +155,10 @@ def draw():
 
     if 'base' in keys_pressed:  # only for test
         for i in obs_list:
-            i.car_Direction *= 0.99
+            i.car_Direction *= 0.99  # Chanes on linux
     if 'notbase' in keys_pressed:  # only for test
         for i in obs_list:
-            i.car_Direction /= 0.99
+            i.car_Direction /= 0.99  # Chanes on linux
 
     if 'left' in keys_pressed:
         car_angle += CAR_ROTATION_SPEED
