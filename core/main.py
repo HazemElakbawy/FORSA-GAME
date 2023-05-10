@@ -18,8 +18,8 @@ UPPER_LEFT_ROAD_WIDTH = UPPER_RIGHT_ROAD_WIDTH = 250
 # CAR PROPERTIES
 CAR_WIDTH = 50
 CAR_LENGTH = 25
-CAR_SPEED = 0.03
-CAR_ROTATION_SPEED = 0.6
+CAR_SPEED = 0.15
+CAR_ROTATION_SPEED = 2
 time_interval = 1
 keys_pressed = set()
 car_pos = [100, 250]
@@ -203,7 +203,7 @@ def load_setup_textures():
     glGenTextures(len(textureIdentifiers), textureIdentifiers)
     # TODO: Load all textures here
     loadHelper("../World Assets/world.png", 0)
-    loadHelper("../World Assets/porche_911.png", 1)
+    # loadHelper("../World Assets/porche_911.png", 1)
     glEnable(GL_BLEND)  # FOR BLENDING
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)  # FOR BLENDING
 
@@ -247,61 +247,7 @@ def drawTextures(color: tuple = (1, 1, 1)):
 # * ======================================= COLLISION PART ================================================== * #
 # * ========================================================================================================= * #
 # * ========================================================================================================= * #
-def draw():
-    global car_pos, car_angle, car_vel, keys_pressed, obstacle_speed
-    glClearColor(0.0, 0.0, 0.0, 0.0)
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
-    # * ========================= draw cars ========================= * #
-    obs_list = [car_Obj_1_0, car_Obj_1_1, car_Obj_1_2,
-                car_Obj_2_0, car_Obj_2_1, car_Obj_2_2,
-                car_Obj_3_0, car_Obj_3_1, car_Obj_3_2,
-                car_Obj_4_0, car_Obj_4_1, car_Obj_4_2]
-
-    for i in obs_list:
-        drawState(i)
-        obstacle_collision(i)
-
-    car = main_car(CAR_WIDTH, CAR_LENGTH, car_pos[0], car_pos[1],
-                   car_angle, [0.6, 0.8, 0.5])
-
-    if 'base' in keys_pressed:  # only for test
-        for i in obs_list:
-            i.car_Direction *= 0.99  # Chanes on linux
-    if 'notbase' in keys_pressed:  # only for test
-        for i in obs_list:
-            i.car_Direction /= 0.99  # Chanes on linux
-
-    if 'left' in keys_pressed:
-        car_angle += CAR_ROTATION_SPEED
-    if 'right' in keys_pressed:
-        car_angle -= CAR_ROTATION_SPEED
-    if 'up' in keys_pressed:
-        car_vel[0] += CAR_SPEED * math.cos(math.radians(car_angle))
-        car_vel[1] += CAR_SPEED * math.sin(math.radians(car_angle))
-    if 'down' in keys_pressed:
-        car_vel[0] -= CAR_SPEED * math.cos(math.radians(car_angle))
-        car_vel[1] -= CAR_SPEED * math.sin(math.radians(car_angle))
-    car_pos[0] += car_vel[0]
-    car_pos[1] += car_vel[1]
-    car_vel[0] *= 0.99
-    car_vel[1] *= 0.99
-
-    # Arrival line walls
-
-    glBegin(GL_LINE_STRIP)
-    glVertex3f(275+25, 710, 0)
-    glVertex3f(275+25, 810, 0)
-    glVertex3f(275-25, 810, 0)
-    glVertex3f(275-25, 710, 0)
-    glEnd()
-
-    # Collision detection to the side walls
-    wall_collision()
-
-    arrival_line()
-
-    glutSwapBuffers()
 
 
 def obstacle_collision(ob):
@@ -401,17 +347,15 @@ def wall_collision():
 
 def arrival_line():
     global car_pos, car_vel, car_angle
-    car_face = car_pos[0] + CAR_WIDTH / 2 * math.cos(math.radians(car_angle))
-    car_back = car_pos[0] - CAR_WIDTH / 2 * math.cos(math.radians(car_angle))
-    car_top = car_pos[1] + CAR_LENGTH / 2 * math.sin(math.radians(car_angle))
-    car_bottom = car_pos[1] - CAR_LENGTH / \
-        2 * math.sin(math.radians(car_angle))
 
-    if (900-100 <= car_top) and (275-25 <= car_face <= 275+25):
-        car_vel[0], car_vel[1] = -car_vel[0], -car_vel[1]
+    car_top = car_pos[1] + CAR_LENGTH / 2
+    car_bottom = car_pos[1] - CAR_LENGTH / 2
 
-    elif (900 - 100 <= car_bottom) and (275 - 25 <= car_back <= 275 + 25):
-        car_vel[0], car_vel[1] = -car_vel[0], -car_vel[1]
+    if (WINDOW_HEIGHT - 35 <= car_top):
+        car_pos[1] = WINDOW_HEIGHT - 35 - CAR_LENGTH / 2
+
+    elif (WINDOW_HEIGHT - 35 <= car_bottom):
+        car_pos[1] = WINDOW_HEIGHT - 35 - CAR_LENGTH / 2
 
 
 # * ========================================================================================================= * #
@@ -491,8 +435,8 @@ def draw():
         car_vel[1] -= CAR_SPEED * math.sin(math.radians(car_angle))
     car_pos[0] += car_vel[0]
     car_pos[1] += car_vel[1]
-    car_vel[0] *= 0.99
-    car_vel[1] *= 0.99
+    car_vel[0] *= 0.965
+    car_vel[1] *= 0.965
 
     # Arrival line walls
     glBegin(GL_LINE_STRIP)
@@ -504,7 +448,7 @@ def draw():
 
     # Collision detection to the side walls
     wall_collision()
-    # arrival_line()
+    arrival_line()
     drawTextures((1, 1, 1))
     rect_L1_1.drawRectangle()
     rect_L2_1.drawRectangle()
