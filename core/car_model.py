@@ -13,8 +13,8 @@ class Car_Model:
 
     def draw_car(self):
         glBegin(GL_QUADS)
-        glVertex(self.left, self.bottom, 0)
-        glVertex(self.right, self.bottom, 0)
-        glVertex(self.right, self.top, 0)
-        glVertex(self.left, self.top, 0)
+        glVertex(self.left, self.bottom, 0.5)
+        glVertex(self.right, self.bottom, 0.5)
+        glVertex(self.right, self.top, 0.5)
+        glVertex(self.left, self.top, 0.5)
         glEnd()

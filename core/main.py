@@ -41,7 +41,8 @@ def init():
     gluOrtho2D(0, WINDOW_WIDTH, 0, WINDOW_HEIGHT)
     glMatrixMode(GL_MODELVIEW)
     glEnable(GL_DEPTH_TEST)
-
+    glEnable(GL_BLEND)  # FOR BLENDING
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)  # FOR BLENDING
 
 
 def Timer(v):
@@ -202,10 +203,12 @@ def load_setup_textures():
     glEnable(GL_TEXTURE_2D)
     glGenTextures(len(textureIdentifiers), textureIdentifiers)
     # TODO: Load all textures here
-    loadHelper("../World Assets/world.png", 0)
-    # loadHelper("../World Assets/porche_911.png", 1)
     glEnable(GL_BLEND)  # FOR BLENDING
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)  # FOR BLENDING
+    loadHelper("../World Assets/porche_911.png", 1)
+    loadHelper("../World Assets/world.png", 0)
+
+
 
     # loadHelper("chess.png", 2)
     # loadHelper("chess.png", 3)
@@ -223,7 +226,7 @@ def drawTextures(color: tuple = (1, 1, 1)):
     # TODO: Draw all textures here [ WORLD , MAIN CAR , OTHER CARS(12)]
     glColor(color[0], color[1], color[2])
     drawHelper(0, world.left, world.right, world.top, world.bottom)
-    # drawHelper(1, car.left, car.right, car.top, car.bottom)
+
 
     # glVertex3f(x/2, y/2, 0)
     # glVertex3f(x/2, -y/2, 0)
@@ -376,18 +379,20 @@ class main_car:
         glPushMatrix()
         glTranslatef(trans_x, trans_y, 0)
         glRotatef(theta, 0, 0, 1)
-        drawHelper(1, -x/2, x/2, y/2, -y/2)
+
+        # Another draw-helper for the car
+        drawHelper1(1, -x/2, x/2, y/2, -y/2)
         glPopMatrix()
-        glColor3f(rgb[0], rgb[1], rgb[2])
+
 
         glPushMatrix()
         glTranslatef(trans_x, trans_y, 0)
         glRotatef(theta, 0, 0, 1)
         glBegin(GL_POLYGON)
-        glVertex3f(x/2, y/2, 0)
-        glVertex3f(x/2, -y/2, 0)
-        glVertex3f(-x/2, -y/2, 0)
-        glVertex3f(-x/2, y/2, 0)
+        glVertex3f(x/2, y/2, 0.5)
+        glVertex3f(x/2, -y/2, 0.5)
+        glVertex3f(-x/2, -y/2, 0.5)
+        glVertex3f(-x/2, y/2, 0.5)
         glEnd()
         glPopMatrix()
 
@@ -406,8 +411,6 @@ def draw():
                 car_Obj_3_0, car_Obj_3_1, car_Obj_3_2,
                 car_Obj_4_0, car_Obj_4_1, car_Obj_4_2]
 
-    car = main_car(CAR_WIDTH, CAR_LENGTH,
-                   car_pos[0], car_pos[1], car_angle, [0.6, 0.8, 0.5])
 
     for i in obs_list:
         drawState(i)
@@ -450,12 +453,14 @@ def draw():
     wall_collision()
     arrival_line()
     drawTextures((1, 1, 1))
-    rect_L1_1.drawRectangle()
-    rect_L2_1.drawRectangle()
-    rect_L2_2.drawRectangle()
-    rect_L3_1.drawRectangle()
-    rect_L3_2.drawRectangle()
-    rect_L3_3.drawRectangle()
+    # rect_L1_1.drawRectangle()
+    # rect_L2_1.drawRectangle()
+    # rect_L2_2.drawRectangle()
+    # rect_L3_1.drawRectangle()
+    # rect_L3_2.drawRectangle()
+    # rect_L3_3.drawRectangle()
+    car = main_car(CAR_WIDTH, CAR_LENGTH,
+                   car_pos[0], car_pos[1], car_angle, [0.6, 0.8, 0.5])
 
     glutSwapBuffers()
 
