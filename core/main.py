@@ -202,21 +202,10 @@ def load_setup_textures():
     glEnable(GL_TEXTURE_2D)
     glGenTextures(len(textureIdentifiers), textureIdentifiers)
     # TODO: Load all textures here
-    loadHelper("../World Assets/world.png", 0)
-    # loadHelper("../World Assets/porche_911.png", 1)
+    loadHelper("FORSA-GAME/World Assets/world.png", 0)
+    loadHelper("FORSA-GAME/World Assets/porche_911.png", 1)
     glEnable(GL_BLEND)  # FOR BLENDING
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)  # FOR BLENDING
-
-    # loadHelper("chess.png", 2)
-    # loadHelper("chess.png", 3)
-    # loadHelper("chess.png", 4)
-    # loadHelper("chess.png", 5)
-    # loadHelper("1.png", 6)
-    # loadHelper("2.png", 7)
-    # loadHelper("3.png", 8)
-    # loadHelper("4.png", 9)
-    # loadHelper("5.png", 10)
-    # loadHelper("6.png", 11)
 
 
 def drawTextures(color: tuple = (1, 1, 1)):
@@ -392,9 +381,6 @@ class main_car:
         glPopMatrix()
 
 
-
-
-
 def draw():
     global car_pos, car_angle, car_vel, keys_pressed, obstacle_speed, car
     glClearColor(0.0, 0.0, 0.0, 0.0)
@@ -438,13 +424,6 @@ def draw():
     car_vel[0] *= 0.965
     car_vel[1] *= 0.965
 
-    # Arrival line walls
-    glBegin(GL_LINE_STRIP)
-    glVertex3f(275+25, 710, 0)
-    glVertex3f(275+25, 810, 0)
-    glVertex3f(275-25, 810, 0)
-    glVertex3f(275-25, 710, 0)
-    glEnd()
 
     # Collision detection to the side walls
     wall_collision()
@@ -467,7 +446,6 @@ def main():
     glutInitWindowPosition(500, 100)
     glutCreateWindow(b"FORSA GAME")
     glutDisplayFunc(draw)
-    glutIdleFunc(draw)
     glutKeyboardFunc(keyboard)
     glutKeyboardUpFunc(keyboard_up)
     glutTimerFunc(time_interval, Timer, 50)
@@ -477,16 +455,3 @@ def main():
 
 
 main()
-# def obstacle_collision(ob):
-#     # global
-#     car_face = car_pos[0] + CAR_WIDTH / 2 * math.cos(math.radians(car_angle))
-#     car_top = car_pos[1] + CAR_LENGTH / 2 * math.sin(math.radians(car_angle))
-#     car_bottom = car_pos[1] - CAR_LENGTH / 2
-#     car_back = car_pos[0] - CAR_WIDTH / 2
-#
-#     #
-#     if (car_face >= ob.left or car_back >= ob.left) and ((car_top <= ob.top and car_top >= ob.bottom) or (car_bottom >= ob.bottom and car_bottom <= ob.top)):
-#         car_vel[0] = -abs(car_vel[0])
-#     if (car_face <= ob.right ) and ((car_top <= ob.top and car_top >= ob.bottom) or (car_bottom >= ob.bottom and car_bottom <= ob.top)):
-#         car_vel[0] = -car_vel[0]
-#         print(car_face)
