@@ -19,7 +19,7 @@ UPPER_LEFT_ROAD_WIDTH = UPPER_RIGHT_ROAD_WIDTH = 250
 CAR_WIDTH = 100
 CAR_LENGTH = 45
 CAR_SPEED = 0.15
-CAR_ROTATION_SPEED = 2
+CAR_ROTATION_SPEED = 1
 time_interval = 1
 keys_pressed = set()
 car_pos = [100, 250]
@@ -41,8 +41,8 @@ def init():
     gluOrtho2D(0, WINDOW_WIDTH, 0, WINDOW_HEIGHT)
     glMatrixMode(GL_MODELVIEW)
     glEnable(GL_DEPTH_TEST)
-    glEnable(GL_BLEND)  # FOR BLENDING
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)  # FOR BLENDING
+    # glEnable(GL_BLEND)  # FOR BLENDING
+    # glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)  # FOR BLENDING
 
 
 def Timer(v):
@@ -173,10 +173,11 @@ car_Obj_4_2 = Car_Model(1100, 650, 1180, 695, -9, obstacle_speed)
 # * ========================================================================================= * #
 
 
-def drawState(carObj):
+def drawState(carObj , texture_index):
     carObj.left = carObj.left + carObj.car_Direction
     carObj.right = carObj.right + carObj.car_Direction
     glColor(1, 1, 1)  # White color
+    carObj.draw_texture(texture_index)
     carObj.draw_car()
 
     if carObj.left >= WINDOW_WIDTH and carObj.car_Direction > 0:
@@ -202,6 +203,20 @@ def load_setup_textures():
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)  # FOR BLENDING
     loadHelper("../World Assets/porche_911.png", 1)
     loadHelper("../World Assets/world.png", 0)
+    loadHelper("../World Assets/car1.png", 2)
+    loadHelper("../World Assets/car2.png", 3)
+    loadHelper("../World Assets/car3.png", 4)
+    loadHelper("../World Assets/car4.png", 5)
+    loadHelper("../World Assets/car5.png", 6)
+    loadHelper("../World Assets/car6.png", 7)
+    loadHelper("../World Assets/car7.png", 8)
+    loadHelper("../World Assets/car8.png", 9)
+    loadHelper("../World Assets/car9.png", 10)
+    loadHelper("../World Assets/car10.png", 11)
+    loadHelper("../World Assets/car11.png", 12)
+    loadHelper("../World Assets/car12.png", 13)
+    loadHelper("../World Assets/car13.png", 14)
+
 
 
 
@@ -401,10 +416,11 @@ def draw():
                 car_Obj_3_0, car_Obj_3_1, car_Obj_3_2,
                 car_Obj_4_0, car_Obj_4_1, car_Obj_4_2]
 
-
-    for i in obs_list:
-        drawState(i)
+    j = 2
+    for i  in obs_list:
+        drawState(i , j)
         obstacle_collision(i)
+        j+=1
 
     # * ========================= Main cars ========================= * #
 

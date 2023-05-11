@@ -18,7 +18,7 @@ import pygame
 """
 
 """textures:world , main car , 12 cars"""
-textureIdentifiers = [i for i in range(14)]
+textureIdentifiers = [i for i in range(15)]
 
 
 def setupHelper(texture, textureIdentifier, width, height):
