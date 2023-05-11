@@ -99,11 +99,12 @@ car_Obj_4_2 = Car_Model(1100, 650, 1180, 695, -9, obstacle_speed)
 # * ================================= Draw other cor state  ================================= * #
 
 def drawState(carObj, texture_index):
-    carObj.left = carObj.left + carObj.car_Direction
-    carObj.right = carObj.right + carObj.car_Direction
     glColor(1, 1, 1)  # White color
     carObj.draw_texture(texture_index)
     carObj.draw_car()
+
+    carObj.left = carObj.left + carObj.car_Direction
+    carObj.right = carObj.right + carObj.car_Direction
 
     if carObj.left >= WINDOW_WIDTH and carObj.car_Direction > 0:
         carObj.left = -80
@@ -120,7 +121,7 @@ def draw():
     global car_pos, car_angle, car_vel, keys_pressed, obstacle_speed
     glClearColor(0.0, 0.0, 0.0, 0.0)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-
+    drawTextures((1, 1, 1), world)
     # * ========================= Draw cars ========================= * #
     obs_list = [car_Obj_1_0, car_Obj_1_1, car_Obj_1_2,
                 car_Obj_2_0, car_Obj_2_1, car_Obj_2_2,
@@ -129,7 +130,7 @@ def draw():
 
     j = 2
     for i in obs_list:
-        drawState(i, j)
+        drawState(i , j)
         obstacle_collision(i, car_pos, car_vel, car_angle, CAR_LENGTH, CAR_WIDTH)
         j += 1
 
@@ -161,7 +162,7 @@ def draw():
     # Collision detection to the side walls
     wall_collision(car_pos, car_vel, car_angle, CAR_LENGTH, CAR_WIDTH)
     arrival_line(car_pos, CAR_LENGTH)
-    drawTextures((1, 1, 1), world)
+
 
     car = MainCar(CAR_WIDTH, CAR_LENGTH,
                    car_pos[0], car_pos[1], car_angle[0], [0.6, 0.8, 0.5])
