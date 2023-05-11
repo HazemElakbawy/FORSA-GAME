@@ -1,11 +1,10 @@
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
-import math
-import numpy as np
-from car_model import *
+import math, numpy as np
 from Rectangles import *
 from Textures import *
+from Collision import *
 
 # WINDOW PROPERTIES
 WINDOW_WIDTH, WINDOW_HEIGHT = 1200, 900
@@ -17,21 +16,18 @@ UPPER_LEFT_ROAD_WIDTH = UPPER_RIGHT_ROAD_WIDTH = 250
 
 # CAR PROPERTIES
 CAR_WIDTH = 100
-CAR_LENGTH = 45
+CAR_LENGTH = 50
 CAR_SPEED = 0.15
 CAR_ROTATION_SPEED = 1
 time_interval = 1
 keys_pressed = set()
 car_pos = [100, 250]
-car_angle = 0.0
+car_angle = [0.0]
 car_vel = [0.0, 0.0]
 obstacle_speed = 0.2  # Changes on linux
 
-# * ========================================================================================= * #
-# * ========================================================================================= * #
+
 # * =================================== Init PROJECTION ===================================== * #
-# * ========================================================================================= * #
-# * ========================================================================================= * #
 
 
 def init():
@@ -41,75 +37,15 @@ def init():
     gluOrtho2D(0, WINDOW_WIDTH, 0, WINDOW_HEIGHT)
     glMatrixMode(GL_MODELVIEW)
     glEnable(GL_DEPTH_TEST)
-    # glEnable(GL_BLEND)  # FOR BLENDING
-    # glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)  # FOR BLENDING
 
 
-def Timer(v):
-    draw()
-    glutTimerFunc(time_interval, Timer, 1)
-
-
-def keyboard(key, x, y):
-    global car_angle, car_vel, keys_pressed
-
-    if key == b'a':
-        keys_pressed.add('left')
-        # print(keys_pressed)
-    elif key == b'd':
-        keys_pressed.add('right')
-        # print(keys_pressed)
-    elif key == b'w':
-        keys_pressed.add('up')
-        # print(keys_pressed)
-    elif key == b's':
-        keys_pressed.add('down')
-        # print(keys_pressed)
-    elif key == b'q':
-        keys_pressed.add('base')
-        print(keys_pressed)
-    elif key == b'e':
-        keys_pressed.add('notbase')
-        print(keys_pressed)
-
-
-def keyboard_up(key, x, y):
-    global car_angle, car_vel, keys_pressed
-
-    if key == b'a':
-        keys_pressed.remove('left')
-        # print(keys_pressed)
-
-    elif key == b'd':
-        keys_pressed.remove('right')
-        # print(keys_pressed)
-
-    elif key == b'w':
-        keys_pressed.remove('up')
-        # print(keys_pressed)
-
-    elif key == b's':
-        keys_pressed.remove('down')
-        # print(keys_pressed)
-    elif key == b'q':
-        keys_pressed.remove('base')
-        print(keys_pressed)
-    elif key == b'e':
-        keys_pressed.remove('notbase')
-        print(keys_pressed)
-
-# * ========================================================================================= * #
-# * ========================================================================================= * #
 # * ========================= Rectangle ( width, height ,  x ,  y ) ========================= * #
-# * ========================================================================================= * #
-# * ========================================================================================= * #
 
 # ! World Rectangle
 world = Rectangle(WINDOW_WIDTH, WINDOW_HEIGHT, 0, 0)
 
 # ! LAYER 01
 rect_L1_1 = Rectangle(WINDOW_WIDTH, 150, 0, 0)
-
 
 # ! LAYER 02
 rect_L2_1 = Rectangle(
@@ -120,10 +56,9 @@ rect_L2_2 = Rectangle(
     WINDOW_WIDTH - MIDDLE_ROAD[0] - rect_L2_1.width, MIDDLE_ROAD[1],
     rect_L2_1.right + MIDDLE_ROAD[0], rect_L1_1.top + LOWER_ROAD_HEIGHT)
 
-
 # ! LAYER 03
 layer3_height = WINDOW_HEIGHT - rect_L1_1.height - \
-    LOWER_ROAD_HEIGHT - rect_L2_1.height - UPPER_ROAD_HEIGHT
+                LOWER_ROAD_HEIGHT - rect_L2_1.height - UPPER_ROAD_HEIGHT
 
 rect_L3_1 = Rectangle(
     150, layer3_height,
@@ -137,12 +72,7 @@ rect_L3_3 = Rectangle(
     150, layer3_height,
     rect_L3_2.right + UPPER_RIGHT_ROAD_WIDTH, rect_L2_1.top + UPPER_ROAD_HEIGHT)
 
-
-# * ========================================================================================================= * #
-# * ========================================================================================================= * #
 # * ========================= car model ( left, bottom , right ,  top , direction ) ========================= * #
-# * ========================================================================================================= * #
-# * ========================================================================================================= * #
 
 
 # road 1
@@ -166,14 +96,9 @@ car_Obj_4_1 = Car_Model(200, 650, 280, 695, -9, obstacle_speed)
 car_Obj_4_2 = Car_Model(1100, 650, 1180, 695, -9, obstacle_speed)
 
 
-# * ========================================================================================= * #
-# * ========================================================================================= * #
-# * ================================= Drow other cor state  ================================= * #
-# * ========================================================================================= * #
-# * ========================================================================================= * #
+# * ================================= Draw other cor state  ================================= * #
 
-
-def drawState(carObj , texture_index):
+def drawState(carObj, texture_index):
     carObj.left = carObj.left + carObj.car_Direction
     carObj.right = carObj.right + carObj.car_Direction
     glColor(1, 1, 1)  # White color
@@ -189,224 +114,10 @@ def drawState(carObj , texture_index):
         carObj.right = WINDOW_WIDTH + 80
 
 
-# * ========================================================================================================= * #
-# * ========================================================================================================= * #
-# * ========================================== TEXTURES PART ================================================ * #
-# * ========================================================================================================= * #
-# * ========================================================================================================= * #
-
-def load_setup_textures():
-    glEnable(GL_TEXTURE_2D)
-    glGenTextures(len(textureIdentifiers), textureIdentifiers)
-    # TODO: Load all textures here
-    glEnable(GL_BLEND)  # FOR BLENDING
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)  # FOR BLENDING
-    loadHelper("../World Assets/porche_911.png", 1)
-    loadHelper("../World Assets/world.png", 0)
-    loadHelper("../World Assets/car1.png", 2)
-    loadHelper("../World Assets/car2.png", 3)
-    loadHelper("../World Assets/car3.png", 4)
-    loadHelper("../World Assets/car4.png", 5)
-    loadHelper("../World Assets/car5.png", 6)
-    loadHelper("../World Assets/car6.png", 7)
-    loadHelper("../World Assets/car7.png", 8)
-    loadHelper("../World Assets/car8.png", 9)
-    loadHelper("../World Assets/car9.png", 10)
-    loadHelper("../World Assets/car10.png", 11)
-    loadHelper("../World Assets/car11.png", 12)
-    loadHelper("../World Assets/car12.png", 13)
-    loadHelper("../World Assets/car13.png", 14)
-
-
-
-
-    # loadHelper("chess.png", 2)
-    # loadHelper("chess.png", 3)
-    # loadHelper("chess.png", 4)
-    # loadHelper("chess.png", 5)
-    # loadHelper("1.png", 6)
-    # loadHelper("2.png", 7)
-    # loadHelper("3.png", 8)
-    # loadHelper("4.png", 9)
-    # loadHelper("5.png", 10)
-    # loadHelper("6.png", 11)
-
-
-def drawTextures(color: tuple = (1, 1, 1)):
-    # TODO: Draw all textures here [ WORLD , MAIN CAR , OTHER CARS(12)]
-    glColor(color[0], color[1], color[2])
-    drawHelper(0, world.left, world.right, world.top, world.bottom)
-
-
-    # glVertex3f(x/2, y/2, 0)
-    # glVertex3f(x/2, -y/2, 0)
-    # glVertex3f(-x/2, -y/2, 0)
-    # glVertex3f(-x/2, y/2, 0)
-
-    # drawHelper(1, )
-    # drawHelper(textureIndex, rectangle.left, rectangle.right,rectangle.bottom, rectangle.top)
-    # drawHelper(textureIndex, rectangle.left, rectangle.right,rectangle.bottom, rectangle.top)
-
-
-
-
-# * ========================================================================================================= * #
-# * ========================================================================================================= * #
-# * ======================================= COLLISION PART ================================================== * #
-# * ========================================================================================================= * #
-# * ========================================================================================================= * #
-
-
-
-def obstacle_collision(ob):
-    global car_pos, car_vel, car_angle
-    ob_width = ob.right - ob.left
-    ob_height = ob.top - ob.bottom
-    ob_center = np.array([(ob.left+ob.right)/2, (ob.top + ob.bottom)/2])
-    dist = math.sqrt((ob_center[0] - car_pos[0]) **
-                     2 + (ob_center[1] - car_pos[1])**2)
-
-    if (dist < (ob_width+CAR_LENGTH)/2) and (dist < (ob_height+CAR_WIDTH)/2):
-        # car_vel[0], car_vel[1] = -car_vel[0], -car_vel[1]
-        car_pos[0], car_pos[1] = 100, 250
-        car_angle = 0
-        car_vel[0], car_vel[1] = 0, 0
-
-
-def wall_collision():
-    global car_pos, car_vel, car_angle
-    # Front-side collision
-    car_face = car_pos[0] + CAR_WIDTH / 2 * math.cos(math.radians(car_angle))
-    car_back = car_pos[0] - CAR_WIDTH / 2 * math.cos(math.radians(car_angle))
-    car_top = car_pos[1] + CAR_LENGTH / 2 * math.sin(math.radians(car_angle))
-    car_bottom = car_pos[1] - CAR_LENGTH / \
-        2 * math.sin(math.radians(car_angle))
-
-    if car_face >= WINDOW_WIDTH:
-        car_vel[0] = -car_vel[0]
-        print(car_pos[0])
-        car_pos[0] = WINDOW_WIDTH - CAR_WIDTH / 2
-    elif car_face <= 0:
-        car_vel[0] = -car_vel[0]
-        print(car_pos[0])
-        car_pos[0] = 0 + CAR_WIDTH / 2
-    elif car_top >= WINDOW_HEIGHT:
-        car_vel[1] = -car_vel[1]
-        car_pos[1] = WINDOW_HEIGHT - CAR_WIDTH / 2
-
-    # front collision to layer 1:
-    elif car_top <= 160:
-        car_pos[0], car_pos[1] = 100, 250
-        car_angle = 0
-        car_vel[0], car_vel[1] = 0, 0
-
-    # face collision to layer 2
-    elif (340 <= car_top <= 360+150) and \
-            ((car_face <= 650) or (car_face >= 650+250)):
-        car_pos[0], car_pos[1] = 100, 250
-        car_angle = 0
-        car_vel[0], car_vel[1] = 0, 0
-
-    # face collision to layer 3
-    elif (340+250+100 <= car_top) and \
-            ((car_face <= 150) or (400 <= car_face <= 300+500) or (1200-145 <= car_face)):
-        car_pos[0], car_pos[1] = 100, 250
-        car_angle = 0
-        car_vel[0], car_vel[1] = 0, 0
-
-    # Back-side collision
-    elif car_back >= WINDOW_WIDTH:
-        car_vel[0] = -car_vel[0]
-        print(car_pos[0])
-        car_pos[0] = WINDOW_WIDTH - CAR_WIDTH / 2
-    elif car_back <= 0:
-        car_vel[0] = -car_vel[0]
-        print(car_pos[0])
-        car_pos[0] = 0 + CAR_WIDTH / 2
-    elif car_bottom >= WINDOW_HEIGHT:
-        car_vel[1] = -car_vel[1]
-        car_pos[1] = WINDOW_HEIGHT - CAR_WIDTH / 2
-
-    # back collision to layer 1:
-    elif car_bottom <= 160:
-        car_pos[0], car_pos[1] = 100, 250
-        car_angle = 0
-        car_vel[0], car_vel[1] = 0, 0
-    # back collision to layer 2
-    elif (340 <= car_bottom <= 360+150) and \
-            ((car_back <= 650) or (car_back >= 650+250)):
-        car_pos[0], car_pos[1] = 100, 250
-        car_angle = 0
-        car_vel[0], car_vel[1] = 0, 0
-
-    # back collision to layer 3
-    elif (340+250+100 <= car_bottom) and \
-            ((car_back <= 150) or (400 <= car_back <= 300+500) or (1200-145 <= car_back)):
-        car_pos[0], car_pos[1] = 100, 250
-        car_angle = 0
-        car_vel[0], car_vel[1] = 0, 0
-
-# * ========================================================================================================= * #
-# * ========================================================================================================= * #
-# * ========================================================================================================= * #
-# * ========================================================================================================= * #
-# * ========================================================================================================= * #
-
-
-def arrival_line():
-    global car_pos, car_vel, car_angle
-
-    car_top = car_pos[1] + CAR_LENGTH / 2
-    car_bottom = car_pos[1] - CAR_LENGTH / 2
-
-    if (WINDOW_HEIGHT - 35 <= car_top):
-        car_pos[1] = WINDOW_HEIGHT - 35 - CAR_LENGTH / 2
-
-    elif (WINDOW_HEIGHT - 35 <= car_bottom):
-        car_pos[1] = WINDOW_HEIGHT - 35 - CAR_LENGTH / 2
-
-
-# * ========================================================================================================= * #
-# * ========================================================================================================= * #
 # * ===============================================  DRAW FUNCTION ========================================== * #
-# * ========================================================================================================= * #
-# * ========================================================================================================= * #
-
-class main_car:
-    def __init__(self, x, y, trans_x, trans_y, theta, rgb):
-        self.x = x
-        self.y = y
-        self.right = trans_x + (x / 2)
-        self.left = trans_x - (x / 2)
-        self.top = trans_y + (y / 2)
-        self.bottom = trans_y - (y / 2)
-
-        glPushMatrix()
-        glTranslatef(trans_x, trans_y, 0)
-        glRotatef(theta, 0, 0, 1)
-
-        # Another draw-helper for the car
-        drawHelper1(1, -x/2, x/2, y/2, -y/2)
-        glPopMatrix()
-
-
-        glPushMatrix()
-        glTranslatef(trans_x, trans_y, 0)
-        glRotatef(theta, 0, 0, 1)
-        glBegin(GL_POLYGON)
-        glVertex3f(x/2, y/2, 0.5)
-        glVertex3f(x/2, -y/2, 0.5)
-        glVertex3f(-x/2, -y/2, 0.5)
-        glVertex3f(-x/2, y/2, 0.5)
-        glEnd()
-        glPopMatrix()
-
-
-
-
 
 def draw():
-    global car_pos, car_angle, car_vel, keys_pressed, obstacle_speed, car
+    global car_pos, car_angle, car_vel, keys_pressed, obstacle_speed
     glClearColor(0.0, 0.0, 0.0, 0.0)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
@@ -417,12 +128,12 @@ def draw():
                 car_Obj_4_0, car_Obj_4_1, car_Obj_4_2]
 
     j = 2
-    for i  in obs_list:
-        drawState(i , j)
-        obstacle_collision(i)
-        j+=1
+    for i in obs_list:
+        drawState(i, j)
+        obstacle_collision(i, car_pos, car_vel, car_angle, CAR_LENGTH, CAR_WIDTH)
+        j += 1
 
-    # * ========================= Main cars ========================= * #
+    # * ========================= Main car ========================= * #
 
     if 'base' in keys_pressed:  # only for test
         for i in obs_list:
@@ -433,43 +144,83 @@ def draw():
             i.car_Direction /= 0.99
 
     if 'left' in keys_pressed:
-        car_angle += CAR_ROTATION_SPEED
+        car_angle[0] += CAR_ROTATION_SPEED
     if 'right' in keys_pressed:
-        car_angle -= CAR_ROTATION_SPEED
+        car_angle[0] -= CAR_ROTATION_SPEED
     if 'up' in keys_pressed:
-        car_vel[0] += CAR_SPEED * math.cos(math.radians(car_angle))
-        car_vel[1] += CAR_SPEED * math.sin(math.radians(car_angle))
+        car_vel[0] += CAR_SPEED * math.cos(math.radians(car_angle[0]))
+        car_vel[1] += CAR_SPEED * math.sin(math.radians(car_angle[0]))
     if 'down' in keys_pressed:
-        car_vel[0] -= CAR_SPEED * math.cos(math.radians(car_angle))
-        car_vel[1] -= CAR_SPEED * math.sin(math.radians(car_angle))
+        car_vel[0] -= CAR_SPEED * math.cos(math.radians(car_angle[0]))
+        car_vel[1] -= CAR_SPEED * math.sin(math.radians(car_angle[0]))
     car_pos[0] += car_vel[0]
     car_pos[1] += car_vel[1]
     car_vel[0] *= 0.965
     car_vel[1] *= 0.965
 
-    # Arrival line walls
-    glBegin(GL_LINE_STRIP)
-    glVertex3f(275+25, 710, 0)
-    glVertex3f(275+25, 810, 0)
-    glVertex3f(275-25, 810, 0)
-    glVertex3f(275-25, 710, 0)
-    glEnd()
-
     # Collision detection to the side walls
-    wall_collision()
-    arrival_line()
-    drawTextures((1, 1, 1))
-    # rect_L1_1.drawRectangle()
-    # rect_L2_1.drawRectangle()
-    # rect_L2_2.drawRectangle()
-    # rect_L3_1.drawRectangle()
-    # rect_L3_2.drawRectangle()
-    # rect_L3_3.drawRectangle()
-    car = main_car(CAR_WIDTH, CAR_LENGTH,
-                   car_pos[0], car_pos[1], car_angle, [0.6, 0.8, 0.5])
+    wall_collision(car_pos, car_vel, car_angle, CAR_LENGTH, CAR_WIDTH)
+    arrival_line(car_pos, CAR_LENGTH)
+    drawTextures((1, 1, 1), world)
+
+    car = MainCar(CAR_WIDTH, CAR_LENGTH,
+                   car_pos[0], car_pos[1], car_angle[0], [0.6, 0.8, 0.5])
 
     glutSwapBuffers()
 
+
+def keyboard(key, x, y):
+    global keys_pressed
+
+    if key == b'a':
+        keys_pressed.add('left')
+        # print(keys_pressed)
+    elif key == b'd':
+        keys_pressed.add('right')
+        # print(keys_pressed)
+    elif key == b'w':
+        keys_pressed.add('up')
+        # print(keys_pressed)
+    elif key == b's':
+        keys_pressed.add('down')
+        # print(keys_pressed)
+    elif key == b'q':
+        keys_pressed.add('base')
+        print(keys_pressed)
+    elif key == b'e':
+        keys_pressed.add('notbase')
+        print(keys_pressed)
+
+
+def keyboard_up(key, x, y):
+    global keys_pressed
+
+    if key == b'a':
+        keys_pressed.remove('left')
+        # print(keys_pressed)
+
+    elif key == b'd':
+        keys_pressed.remove('right')
+        # print(keys_pressed)
+
+    elif key == b'w':
+        keys_pressed.remove('up')
+        # print(keys_pressed)
+
+    elif key == b's':
+        keys_pressed.remove('down')
+        # print(keys_pressed)
+    elif key == b'q':
+        keys_pressed.remove('base')
+        print(keys_pressed)
+    elif key == b'e':
+        keys_pressed.remove('notbase')
+        print(keys_pressed)
+
+
+def Timer(v):
+    draw()
+    glutTimerFunc(time_interval, Timer, 1)
 
 def main():
     glutInit()
@@ -488,16 +239,3 @@ def main():
 
 
 main()
-# def obstacle_collision(ob):
-#     # global
-#     car_face = car_pos[0] + CAR_WIDTH / 2 * math.cos(math.radians(car_angle))
-#     car_top = car_pos[1] + CAR_LENGTH / 2 * math.sin(math.radians(car_angle))
-#     car_bottom = car_pos[1] - CAR_LENGTH / 2
-#     car_back = car_pos[0] - CAR_WIDTH / 2
-#
-#     #
-#     if (car_face >= ob.left or car_back >= ob.left) and ((car_top <= ob.top and car_top >= ob.bottom) or (car_bottom >= ob.bottom and car_bottom <= ob.top)):
-#         car_vel[0] = -abs(car_vel[0])
-#     if (car_face <= ob.right ) and ((car_top <= ob.top and car_top >= ob.bottom) or (car_bottom >= ob.bottom and car_bottom <= ob.top)):
-#         car_vel[0] = -car_vel[0]
-#         print(car_face)
