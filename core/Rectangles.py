@@ -11,6 +11,9 @@ class Rectangle:
         self.top = y + height
         self.bottom = y
 
+    def draw_texture(self, texture_index):
+        drawHelper1(texture_index, self.left, self.right, self.top, self.bottom)
+
     def drawRectangle(self, color: tuple = (1, 1, 1)):
         glColor3f(color[0], color[1], color[2])
         glBegin(GL_QUADS)
@@ -37,16 +40,7 @@ class MainCar:
         drawHelper1(1, -x / 2, x / 2, y / 2, -y / 2)
         glPopMatrix()
 
-        glPushMatrix()
-        glTranslatef(trans_x, trans_y, 0)
-        glRotatef(theta, 0, 0, 1)
-        glBegin(GL_POLYGON)
-        glVertex3f(x / 2, y / 2, 0.5)
-        glVertex3f(x / 2, -y / 2, 0.5)
-        glVertex3f(-x / 2, -y / 2, 0.5)
-        glVertex3f(-x / 2, y / 2, 0.5)
-        glEnd()
-        glPopMatrix()
+
 
 
 class Car_Model:
