@@ -100,22 +100,6 @@ def load_setup_textures():
     loadHelper("World Assets/car-pink.png", 12)
     loadHelper("World Assets/car-orange.png", 13)
 
-
-    # loadHelper("FORSA-GAME/World Assets/porche_911.png", 1)
-    # loadHelper("FORSA-GAME/World Assets/world.png", 0)
-    # loadHelper("FORSA-GAME/World Assets/car-blue.png", 2)
-    # loadHelper("FORSA-GAME/World Assets/car-green.png", 3)
-    # loadHelper("FORSA-GAME/World Assets/car-orange.png", 4)
-    # loadHelper("FORSA-GAME/World Assets/car-pink.png", 5)
-    # loadHelper("FORSA-GAME/World Assets/car-purple.png", 6)
-    # loadHelper("FORSA-GAME/World Assets/car-red.png", 7)
-    # loadHelper("FORSA-GAME/World Assets/car-yellow.png", 8)
-    # loadHelper("FORSA-GAME/World Assets/car-blue.png", 9)
-    # loadHelper("FORSA-GAME/World Assets/car-green.png", 11)
-    # loadHelper("FORSA-GAME/World Assets/car-orange.png", 10)
-    # loadHelper("FORSA-GAME/World Assets/car-red.png", 12)
-    # loadHelper("FORSA-GAME/World Assets/car-purple.png", 13)
-    # loadHelper("FORSA-GAME/World Assets/car-yellow.png", 14)
 def drawTextures(color, world):
     # TODO: Draw all textures here [ WORLD , MAIN CAR , OTHER CARS(12)]
     glColor(color[0], color[1], color[2])

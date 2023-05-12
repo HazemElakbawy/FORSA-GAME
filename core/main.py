@@ -1,3 +1,4 @@
+import os 
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
@@ -17,8 +18,8 @@ UPPER_LEFT_ROAD_WIDTH = UPPER_RIGHT_ROAD_WIDTH = 250
 # CAR PROPERTIES
 CAR_WIDTH = 60
 CAR_LENGTH = 30
-CAR_SPEED = 0.005
-CAR_ROTATION_SPEED = .1
+CAR_SPEED = 0.15
+CAR_ROTATION_SPEED = 1
 time_interval = 1
 keys_pressed = set()
 car_pos = [100, 250]
@@ -264,8 +265,11 @@ def main():
     init()
     load_setup_textures()
     glutMainLoop()
-import os
-print(os.getcwd())
 
+current_dir = os.getcwd().strip('\/core')
 
+if os.name == "posix" and not(current_dir.startswith('/')) : # if linux
+    current_dir = "/" + current_dir
+
+os.chdir(current_dir)
 main()
