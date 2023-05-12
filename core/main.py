@@ -18,12 +18,11 @@ MIDDLE_ROAD = (250, 150)
 UPPER_LEFT_ROAD_WIDTH = UPPER_RIGHT_ROAD_WIDTH = 250
 
 # CAR PROPERTIES
-CAR_WIDTH = 60
-CAR_LENGTH = 30
-CAR_SPEED = 0.15
-CAR_ROTATION_SPEED = 1
+
+CAR_WIDTH = 80
 CAR_LENGTH = 40
-CAR_SPEED = 0.004
+CAR_SPEED = 0.06
+CAR_ROTATION_SPEED = 0.8
 time_interval = 1
 keys_pressed = set()
 car_pos = [100, 250]
@@ -31,6 +30,7 @@ car_angle = [0.0]
 car_vel = [0.0, 0.0]
 obstacle_speed = 0.2  # Changes on linux
 
+game_over = [0]
 
 # * =================================== Init PROJECTION ===================================== * #
 
@@ -52,27 +52,28 @@ world = Rectangle(WINDOW_WIDTH, WINDOW_HEIGHT, 0, 0)
 
 
 # road 1
-car_Obj_1_0 = Car_Model(100, 180, 180, 220, 3, obstacle_speed)
-car_Obj_1_1 = Car_Model(400, 180, 480, 220, 3, obstacle_speed)
-car_Obj_1_2 = Car_Model(800, 180, 880, 220, 3, obstacle_speed)
+car_Obj_1_0 = Car_Model(100, 160, 180, 205, 3, obstacle_speed)
+car_Obj_1_1 = Car_Model(400, 160, 480, 205, 3, obstacle_speed)
+car_Obj_1_2 = Car_Model(800, 160, 880, 205, 3, obstacle_speed)
 
 # road 2
-car_Obj_2_0 = Car_Model(100, 280, 180, 320, -4, obstacle_speed)
-car_Obj_2_1 = Car_Model(400, 280, 480, 320, -4, obstacle_speed)
-car_Obj_2_2 = Car_Model(900, 280, 980, 320, -4, obstacle_speed)
+car_Obj_2_0 = Car_Model(100, 300, 180, 345, -4, obstacle_speed)
+car_Obj_2_1 = Car_Model(400, 300, 480, 345, -4, obstacle_speed)
+car_Obj_2_2 = Car_Model(900, 300, 980, 345, -4, obstacle_speed)
 
 # road 3
-car_Obj_3_0 = Car_Model(500, 530, 580, 570, 4, obstacle_speed)
-car_Obj_3_1 = Car_Model(900, 530, 980, 570, 4, obstacle_speed)
-car_Obj_3_2 = Car_Model(200, 530, 280, 570, 4, obstacle_speed)
+car_Obj_3_0 = Car_Model(500, 520, 580, 565, 4, obstacle_speed)
+car_Obj_3_1 = Car_Model(900, 520, 980, 565, 4, obstacle_speed)
+car_Obj_3_2 = Car_Model(200, 520, 280, 565, 4, obstacle_speed)
 
 # road 4
-car_Obj_4_0 = Car_Model(600, 630, 680, 670, -9, obstacle_speed)
-car_Obj_4_1 = Car_Model(200, 630, 280, 670, -9, obstacle_speed)
-car_Obj_4_2 = Car_Model(1100, 630, 1180, 670, -9, obstacle_speed)
+car_Obj_4_0 = Car_Model(600, 650, 680, 695, -9, obstacle_speed)
+car_Obj_4_1 = Car_Model(200, 650, 280, 695, -9, obstacle_speed)
+car_Obj_4_2 = Car_Model(1100, 650, 1180, 695, -9, obstacle_speed)
 
 
 # * ================================= Draw other cor state  ================================= * #
+
 
 def drawState(carObj, texture_index):
     glColor(1, 1, 1)  # White color
@@ -100,9 +101,9 @@ start = 1
 button_width = 120
 button_height = 60
 
-start_button = Rectangle(button_width, button_height, (WINDOW_WIDTH / 2) - (button_width / 2),
-                         (WINDOW_HEIGHT / 2) - (button_height / 2) + 100)
-
+start_button = Rectangle(button_width, button_height, \
+                         (WINDOW_WIDTH/2)-(button_width/2), \
+                         (WINDOW_HEIGHT/2)-(button_height/2)+100)
 
 def draw_start():
     world.draw_texture(14)
@@ -112,24 +113,28 @@ def draw_start():
 def MouseMotion(button, state, x, y):
     global start
     # handle click process at start button :
-    if start == 1:
-        if start_button.left <= x <= start_button.right and WINDOW_HEIGHT - start_button.top <= y <= WINDOW_HEIGHT - start_button.bottom and button == GLUT_LEFT_BUTTON:
-            # glDeleteTextures(2, texture_names)
-            button_sound.play()
-            start_sound.play()
+
+    if start == 1 :
+        if start_button.left <= x <= start_button.right and \
+                WINDOW_HEIGHT-start_button.top <= y <= WINDOW_HEIGHT-start_button.bottom and \
+                button == GLUT_LEFT_BUTTON:
+            #glDeleteTextures(2, texture_names)
             start = 0
 
 
 # * ===============================================  DRAW FUNCTION ========================================== * #
 
 def draw():
-    global car_pos, car_angle, car_vel, keys_pressed, obstacle_speed
+    global car_pos, car_angle, car_vel, keys_pressed, obstacle_speed, game_over
     glClear(GL_COLOR_BUFFER_BIT)
 
     if start == 1:
         draw_start()
 
     else:
+        drawTextures((1, 1, 1), world)
+        glClearColor(0.0, 0.0, 0.0, 0.0)
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         drawTextures((1, 1, 1), world)
         # * ========================= Draw cars ========================= * #
         obs_list = [car_Obj_1_0, car_Obj_1_1, car_Obj_1_2,
@@ -140,7 +145,7 @@ def draw():
         j = 2
         for i in obs_list:
             drawState(i, j)
-            obstacle_collision(i, car_pos, car_vel, car_angle, CAR_LENGTH, CAR_WIDTH)
+            obstacle_collision(i, car_pos, car_vel, car_angle, CAR_LENGTH, CAR_WIDTH, game_over)
             j += 1
 
         # * ========================= Main car ========================= * #
@@ -176,15 +181,15 @@ def draw():
 
         car_pos[0] += car_vel[0]
         car_pos[1] += car_vel[1]
-        car_vel[0] *= 0.965
-        car_vel[1] *= 0.965
+        car_vel[0] *= 0.98
+        car_vel[1] *= 0.98
 
-        # Collision detection to the side walls
-        wall_collision(car_pos, car_vel, car_angle, CAR_LENGTH, CAR_WIDTH)
-        arrival_line(car_pos, CAR_LENGTH)
+    # Collision detection to the side walls
+    wall_collision(car_pos, car_vel, car_angle, CAR_LENGTH, CAR_WIDTH)
+    arrival_line(car_pos, CAR_LENGTH)
 
-        car = MainCar(CAR_WIDTH, CAR_LENGTH,
-                      car_pos[0], car_pos[1], car_angle[0], [0.6, 0.8, 0.5])
+    car = MainCar(CAR_WIDTH, CAR_LENGTH,
+                  car_pos[0], car_pos[1], car_angle[0], [0.6, 0.8, 0.5])
 
     glutSwapBuffers()
 
