@@ -41,8 +41,6 @@ class MainCar:
         glPopMatrix()
 
 
-
-
 class Car_Model:
     def __init__(self, left, bottom, right, top, car_Direction, obstacle_speed):
         self.left = left

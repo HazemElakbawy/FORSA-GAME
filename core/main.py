@@ -1,4 +1,4 @@
-import os 
+import os
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
@@ -6,6 +6,8 @@ import math, numpy as np
 from Rectangles import *
 from Textures import *
 from Collision import *
+import pygame
+from sounds import *
 
 # WINDOW PROPERTIES
 WINDOW_WIDTH, WINDOW_HEIGHT = 1200, 900
@@ -43,34 +45,6 @@ def init():
 
 # ! World Rectangle
 world = Rectangle(WINDOW_WIDTH, WINDOW_HEIGHT, 0, 0)
-
-# ! LAYER 01
-rect_L1_1 = Rectangle(WINDOW_WIDTH, 150, 0, 0)
-
-# ! LAYER 02
-rect_L2_1 = Rectangle(
-    650, MIDDLE_ROAD[1],
-    0, rect_L1_1.top + LOWER_ROAD_HEIGHT)
-
-rect_L2_2 = Rectangle(
-    WINDOW_WIDTH - MIDDLE_ROAD[0] - rect_L2_1.width, MIDDLE_ROAD[1],
-    rect_L2_1.right + MIDDLE_ROAD[0], rect_L1_1.top + LOWER_ROAD_HEIGHT)
-
-# ! LAYER 03
-layer3_height = WINDOW_HEIGHT - rect_L1_1.height - \
-                LOWER_ROAD_HEIGHT - rect_L2_1.height - UPPER_ROAD_HEIGHT
-
-rect_L3_1 = Rectangle(
-    150, layer3_height,
-    0, rect_L2_1.top + UPPER_ROAD_HEIGHT)
-
-rect_L3_2 = Rectangle(
-    400, layer3_height,
-    rect_L3_1.right + UPPER_LEFT_ROAD_WIDTH, rect_L2_1.top + UPPER_ROAD_HEIGHT)
-
-rect_L3_3 = Rectangle(
-    150, layer3_height,
-    rect_L3_2.right + UPPER_RIGHT_ROAD_WIDTH, rect_L2_1.top + UPPER_ROAD_HEIGHT)
 
 # * ========================= car model ( left, bottom , right ,  top , direction ) ========================= * #
 
@@ -113,30 +87,36 @@ def drawState(carObj, texture_index):
         carObj.left = WINDOW_WIDTH
         carObj.right = WINDOW_WIDTH + 80
 
+
 # * ===============================================  Start & End  ========================================== * #
+
 
 # signal 
 start = 1
 
 # start buttom size :
-button_width  = 120
+button_width = 120
 button_height = 60
 
-start_button = Rectangle(button_width, button_height, (WINDOW_WIDTH/2)-(button_width/2), (WINDOW_HEIGHT/2)-(button_height/2)+100)
+start_button = Rectangle(button_width, button_height, (WINDOW_WIDTH / 2) - (button_width / 2),
+                         (WINDOW_HEIGHT / 2) - (button_height / 2) + 100)
+
 
 def draw_start():
     world.draw_texture(14)
     start_button.draw_texture(15)
-    
 
 
 def MouseMotion(button, state, x, y):
     global start
     # handle click process at start button :
-    if start == 1 :
-        if start_button.left <= x <= start_button.right and WINDOW_HEIGHT-start_button.top <= y <= WINDOW_HEIGHT-start_button.bottom and button == GLUT_LEFT_BUTTON:
-            #glDeleteTextures(2, texture_names)
+    if start == 1:
+        if start_button.left <= x <= start_button.right and WINDOW_HEIGHT - start_button.top <= y <= WINDOW_HEIGHT - start_button.bottom and button == GLUT_LEFT_BUTTON:
+            # glDeleteTextures(2, texture_names)
+            button_sound.play()
+            start_sound.play()
             start = 0
+
 
 # * ===============================================  DRAW FUNCTION ========================================== * #
 
@@ -144,10 +124,10 @@ def draw():
     global car_pos, car_angle, car_vel, keys_pressed, obstacle_speed
     glClear(GL_COLOR_BUFFER_BIT)
 
-    if start == 1 :
+    if start == 1:
         draw_start()
-    
-    else :
+
+    else:
         drawTextures((1, 1, 1), world)
         # * ========================= Draw cars ========================= * #
         obs_list = [car_Obj_1_0, car_Obj_1_1, car_Obj_1_2,
@@ -157,7 +137,7 @@ def draw():
 
         j = 2
         for i in obs_list:
-            drawState(i , j)
+            drawState(i, j)
             obstacle_collision(i, car_pos, car_vel, car_angle, CAR_LENGTH, CAR_WIDTH)
             j += 1
 
@@ -178,9 +158,20 @@ def draw():
         if 'up' in keys_pressed:
             car_vel[0] += CAR_SPEED * math.cos(math.radians(car_angle[0]))
             car_vel[1] += CAR_SPEED * math.sin(math.radians(car_angle[0]))
+            movement_sound.play()
+        if 'up' not in keys_pressed:
+            movement_sound.stop()
+
         if 'down' in keys_pressed:
             car_vel[0] -= CAR_SPEED * math.cos(math.radians(car_angle[0]))
             car_vel[1] -= CAR_SPEED * math.sin(math.radians(car_angle[0]))
+            back_sound.play()
+        if 'down' not in keys_pressed:
+            back_sound.stop()
+        if 'calcson' in keys_pressed:
+            calcson.play()
+            keys_pressed.remove('calcson')
+
         car_pos[0] += car_vel[0]
         car_pos[1] += car_vel[1]
         car_vel[0] *= 0.965
@@ -190,9 +181,8 @@ def draw():
         wall_collision(car_pos, car_vel, car_angle, CAR_LENGTH, CAR_WIDTH)
         arrival_line(car_pos, CAR_LENGTH)
 
-
         car = MainCar(CAR_WIDTH, CAR_LENGTH,
-                    car_pos[0], car_pos[1], car_angle[0], [0.6, 0.8, 0.5])
+                      car_pos[0], car_pos[1], car_angle[0], [0.6, 0.8, 0.5])
 
     glutSwapBuffers()
 
@@ -218,6 +208,8 @@ def keyboard(key, x, y):
     elif key == b'e':
         keys_pressed.add('notbase')
         print(keys_pressed)
+    elif key == b'c':
+        keys_pressed.add('calcson')
 
 
 def keyboard_up(key, x, y):
@@ -250,9 +242,10 @@ def Timer(v):
     draw()
     glutTimerFunc(time_interval, Timer, 1)
 
+
 def main():
     glutInit()
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB )
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB)
     glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT)
     glutInitWindowPosition(500, 100)
     glutCreateWindow(b"FORSA GAME")
@@ -266,9 +259,10 @@ def main():
     load_setup_textures()
     glutMainLoop()
 
+
 current_dir = os.getcwd().strip('\/core')
 
-if os.name == "posix" and not(current_dir.startswith('/')) : # if linux
+if os.name == "posix" and not (current_dir.startswith('/')):  # if linux
     current_dir = "/" + current_dir
 
 os.chdir(current_dir)
