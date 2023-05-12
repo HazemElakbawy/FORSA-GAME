@@ -1,5 +1,6 @@
 import math, numpy as np
-# import sys
+from sounds import *
+
 WINDOW_WIDTH, WINDOW_HEIGHT = 1200, 900
 
 
@@ -125,6 +126,8 @@ def arrival_line(car_pos, CAR_LENGTH):
 
     if WINDOW_HEIGHT - 35 <= car_top:
         car_pos[1] = WINDOW_HEIGHT - 35 - CAR_LENGTH / 2
+        win.play()
 
     elif WINDOW_HEIGHT - 35 <= car_bottom:
         car_pos[1] = WINDOW_HEIGHT - 35 - CAR_LENGTH / 2
+        win.play()
