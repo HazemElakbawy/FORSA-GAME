@@ -1,20 +1,48 @@
 import math, numpy as np
-
+# import sys
 WINDOW_WIDTH, WINDOW_HEIGHT = 1200, 900
 
 
-def obstacle_collision(ob, car_pos, car_vel, car_angle, CAR_LENGTH, CAR_WIDTH):
-    ob_width = ob.right - ob.left
-    ob_height = ob.top - ob.bottom
-    ob_center = np.array([(ob.left + ob.right) / 2, (ob.top + ob.bottom) / 2])
-    dist = math.sqrt((ob_center[0] - car_pos[0]) **
-                     2 + (ob_center[1] - car_pos[1]) ** 2)
+def obstacle_collision(ob, car_pos, car_vel, car_angle, CAR_LENGTH, CAR_WIDTH, game_over):
+    # calculate car sides
+    car_face = car_pos[0] + CAR_WIDTH / 2 * math.cos(math.radians(car_angle[0]))
+    car_back = car_pos[0] - CAR_WIDTH / 2 * math.cos(math.radians(car_angle[0]))
+    car_top = car_pos[1] + CAR_LENGTH / 2 * math.sin(math.radians(car_angle[0]))
+    car_bottom = car_pos[1] - CAR_LENGTH / 2 * math.sin(math.radians(car_angle[0]))
 
-    if (dist < (ob_width + CAR_LENGTH) / 2) and (dist < (ob_height + CAR_WIDTH) / 2):
-        car_pos[0], car_pos[1] = 100, 250
-        car_angle[0] = 0
-        car_vel[0], car_vel[1] = 0, 0
-        print('I am here', car_angle)
+    # calculate obstacle sides
+    ob_left = ob.left
+    ob_right = ob.right
+    ob_top = ob.top + 20
+    ob_bottom = ob.bottom - 20
+
+    # check for collision from each side
+    if car_face >= ob_left and car_back <= ob_right:
+        if car_top >= ob_bottom and car_top <= ob_top:
+            car_pos[0], car_pos[1] = 100, 250
+            car_angle[0] = 0
+            car_vel[0], car_vel[1] = 0, 0
+            game_over[0] += 1  # collision detected on top side
+        elif car_bottom <= ob_top and car_bottom >= ob_bottom:
+            car_pos[0], car_pos[1] = 100, 250
+            car_angle[0] = 0
+            car_vel[0], car_vel[1] = 0, 0
+            game_over[0] += 1  # collision detected on bottom side
+    elif car_top <= ob_top and car_bottom >= ob_bottom:
+        if car_back <= ob_right + 13 and car_back >= ob_left - 13:
+            car_pos[0], car_pos[1] = 100, 250
+            car_angle[0] = 0
+            car_vel[0], car_vel[1] = 0, 0
+            game_over[0] += 1  # collision detected on right side
+        elif car_face >= ob_left and car_face <= ob_right:
+            car_pos[0], car_pos[1] = 100, 250
+            car_angle[0] = 0
+            car_vel[0], car_vel[1] = 0, 0
+            game_over[0] += 1  # collision detected on left side
+    # if the player crashed 3 times then game over:
+    if game_over[0] == 3:
+        print('game_over')
+        game_over[0] = 0
 
 
 def wall_collision(car_pos, car_vel, car_angle, CAR_LENGTH, CAR_WIDTH):
