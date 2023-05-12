@@ -77,28 +77,28 @@ def load_setup_textures():
 
     glGenTextures(len(textureIdentifiers), textureIdentifiers)
     # TODO: Load all textures here
-
-    loadHelper("World Assets/start.png", 14)
-    loadHelper("World Assets/start-button.png", 15)
-
-    loadHelper("World Assets/porche_911.png", 1)
-    loadHelper("World Assets/world.png", 0)
-
-    loadHelper("World Assets/car-yellow.png", 2)
-    loadHelper("World Assets/car-red.png", 3)
-    loadHelper("World Assets/car-purple.png", 4)
-
-    loadHelper("World Assets/car-purple-2.png", 5)
-    loadHelper("World Assets/car-pink.png", 6)
-    loadHelper("World Assets/car-orange.png", 7)
-
-    loadHelper("World Assets/car-green.png", 8)
-    loadHelper("World Assets/car-blue.png", 9)
-    loadHelper("World Assets/car-red.png", 10)
-
-    loadHelper("World Assets/car-purple-2.png", 11)
-    loadHelper("World Assets/car-pink.png", 12)
-    loadHelper("World Assets/car-orange.png", 13)
+    #
+    # loadHelper("World Assets/start.png", 14)
+    # loadHelper("World Assets/start-button.png", 15)
+    #
+    # loadHelper("World Assets/porche_911.png", 1)
+    # loadHelper("World Assets/world.png", 0)
+    #
+    # loadHelper("World Assets/car-yellow.png", 2)
+    # loadHelper("World Assets/car-red.png", 3)
+    # loadHelper("World Assets/car-purple.png", 4)
+    #
+    # loadHelper("World Assets/car-purple-2.png", 5)
+    # loadHelper("World Assets/car-pink.png", 6)
+    # loadHelper("World Assets/car-orange.png", 7)
+    #
+    # loadHelper("World Assets/car-green.png", 8)
+    # loadHelper("World Assets/car-blue.png", 9)
+    # loadHelper("World Assets/car-red.png", 10)
+    #
+    # loadHelper("World Assets/car-purple-2.png", 11)
+    # loadHelper("World Assets/car-pink.png", 12)
+    # loadHelper("World Assets/car-orange.png", 13)
 
 
     # loadHelper("FORSA-GAME/World Assets/porche_911.png", 1)

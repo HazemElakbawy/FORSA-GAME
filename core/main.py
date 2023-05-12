@@ -264,6 +264,8 @@ def main():
     init()
     load_setup_textures()
     glutMainLoop()
+import os
+print(os.getcwd())
 
 
 main()
