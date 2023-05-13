@@ -1,7 +1,7 @@
 # Make Directories Stable :
 import os
 dir = os.path.dirname(__file__).rstrip('\/core')    # get dir of "main.py" and make "FORSA-GAME" as current directory. 
-if os.name == "posix" and not (current_dir.startswith('/')):  # if linux
+if os.name == "posix" and not (dir.startswith('/')):  # if linux
     dir = "/" + dir
 os.chdir(dir)
 
