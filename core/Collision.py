@@ -1,5 +1,5 @@
 import math, numpy as np
-from sounds import *
+from Sounds import *
 
 WINDOW_WIDTH, WINDOW_HEIGHT = 1200, 900
 

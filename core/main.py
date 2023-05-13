@@ -1,4 +1,11 @@
+# Make Directories Stable :
 import os
+dir = os.path.dirname(__file__).rstrip('\/core')    # get dir of "main.py" and make "FORSA-GAME" as current directory. 
+if os.name == "posix" and not (current_dir.startswith('/')):  # if linux
+    dir = "/" + dir
+os.chdir(dir)
+
+# Import Modules :
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
@@ -7,7 +14,7 @@ from Rectangles import *
 from Textures import *
 from Collision import *
 import pygame
-from sounds import *
+from Sounds import *
 
 # WINDOW PROPERTIES
 WINDOW_WIDTH, WINDOW_HEIGHT = 1200, 900
@@ -266,11 +273,4 @@ def main():
     load_setup_textures()
     glutMainLoop()
 
-
-current_dir = os.getcwd().strip('\/core')
-
-if os.name == "posix" and not (current_dir.startswith('/')):  # if linux
-    current_dir = "/" + current_dir
-
-os.chdir(current_dir)
 main()

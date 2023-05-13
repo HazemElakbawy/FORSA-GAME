@@ -5,23 +5,23 @@ import pygame
 pygame.init()
 pygame.mixer.init()
 start_sound = pygame.mixer.Sound(
-    "FORSA-GAME/sounds/start_car.wav")
+    "Sounds Assets/start_car.wav")
 
 back_sound = pygame.mixer.Sound(
-    "FORSA-GAME/sounds/back_sound_mp3cut.net.wav")
+    "Sounds Assets/back_sound_mp3cut.net.wav")
 
 button_sound = pygame.mixer.Sound(
-    "FORSA-GAME/sounds/button.wav")
+    "Sounds Assets/button.wav")
 
 movement_sound = pygame.mixer.Sound(
-    "FORSA-GAME/sounds/Porsche Gt3.mp3")
+    "Sounds Assets/Porsche Gt3.mp3")
 
 calcson = pygame.mixer.Sound(
-    "FORSA-GAME/sounds/calcson.wav")
+    "Sounds Assets/calcson.wav")
 
-# crash_car=pygame.mixer.Sound("sounds/car_crash_car.wav")
+# crash_car=pygame.mixer.Sound("Sounds Assets/car_crash_car.wav")
 
-# crash_wall=pygame.mixer.Sound("sounds/car_crash_wall.wav")
+# crash_wall=pygame.mixer.Sound("Sounds Assets/car_crash_wall.wav")
 
 win = pygame.mixer.Sound(
-    "FORSA-GAME/sounds/win_game.wav")
+    "Sounds Assets/win_game.wav")
