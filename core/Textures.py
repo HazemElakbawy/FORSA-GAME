@@ -5,7 +5,6 @@ import pygame
 # from Rectangles import *
 
 
-
 """ STEPS
     1. glEnable(GL_TEXTURE_2D)
     2. Load images
@@ -57,7 +56,7 @@ def drawHelper(textureIndex, left, right, top, bottom):
     glBindTexture(GL_TEXTURE_2D, -1)
 
 
-def drawHelper1 (textureIndex, left, right, top, bottom):
+def drawHelper1(textureIndex, left, right, top, bottom):
     glBindTexture(GL_TEXTURE_2D, textureIdentifiers[textureIndex])
     glBegin(GL_QUADS)
     glTexCoord2f(0.0, 0.0)

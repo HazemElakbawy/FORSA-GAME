@@ -12,7 +12,8 @@ class Rectangle:
         self.bottom = y
 
     def draw_texture(self, texture_index):
-        drawHelper1(texture_index, self.left, self.right, self.top, self.bottom)
+        drawHelper1(texture_index, self.left,
+                    self.right, self.top, self.bottom)
 
     def drawRectangle(self, color: tuple = (1, 1, 1)):
         glColor3f(color[0], color[1], color[2])
@@ -50,7 +51,8 @@ class Car_Model:
         self.car_Direction = car_Direction * obstacle_speed
 
     def draw_texture(self, texture_index):
-        drawHelper1(texture_index, self.left, self.right, self.top, self.bottom)
+        drawHelper1(texture_index, self.left,
+                    self.right, self.top, self.bottom)
 
     def draw_car(self):
         glBegin(GL_POLYGON)

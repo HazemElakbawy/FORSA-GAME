@@ -1,4 +1,5 @@
-import math, numpy as np
+import math
+import numpy as np
 from Sounds import *
 
 WINDOW_WIDTH, WINDOW_HEIGHT = 1200, 900
@@ -6,10 +7,14 @@ WINDOW_WIDTH, WINDOW_HEIGHT = 1200, 900
 
 def obstacle_collision(ob, car_pos, car_vel, car_angle, CAR_LENGTH, CAR_WIDTH, game_over):
     # calculate car sides
-    car_face = car_pos[0] + CAR_WIDTH / 2 * math.cos(math.radians(car_angle[0]))
-    car_back = car_pos[0] - CAR_WIDTH / 2 * math.cos(math.radians(car_angle[0]))
-    car_top = car_pos[1] + CAR_LENGTH / 2 * math.sin(math.radians(car_angle[0]))
-    car_bottom = car_pos[1] - CAR_LENGTH / 2 * math.sin(math.radians(car_angle[0]))
+    car_face = car_pos[0] + CAR_WIDTH / 2 * \
+        math.cos(math.radians(car_angle[0]))
+    car_back = car_pos[0] - CAR_WIDTH / 2 * \
+        math.cos(math.radians(car_angle[0]))
+    car_top = car_pos[1] + CAR_LENGTH / 2 * \
+        math.sin(math.radians(car_angle[0]))
+    car_bottom = car_pos[1] - CAR_LENGTH / 2 * \
+        math.sin(math.radians(car_angle[0]))
 
     # calculate obstacle sides
     ob_left = ob.left
@@ -48,11 +53,14 @@ def obstacle_collision(ob, car_pos, car_vel, car_angle, CAR_LENGTH, CAR_WIDTH, g
 
 def wall_collision(car_pos, car_vel, car_angle, CAR_LENGTH, CAR_WIDTH):
     # Front-side collision
-    car_face = car_pos[0] + CAR_WIDTH / 2 * math.cos(math.radians(car_angle[0]))
-    car_back = car_pos[0] - CAR_WIDTH / 2 * math.cos(math.radians(car_angle[0]))
-    car_top = car_pos[1] + CAR_LENGTH / 2 * math.sin(math.radians(car_angle[0]))
+    car_face = car_pos[0] + CAR_WIDTH / 2 * \
+        math.cos(math.radians(car_angle[0]))
+    car_back = car_pos[0] - CAR_WIDTH / 2 * \
+        math.cos(math.radians(car_angle[0]))
+    car_top = car_pos[1] + CAR_LENGTH / 2 * \
+        math.sin(math.radians(car_angle[0]))
     car_bottom = car_pos[1] - CAR_LENGTH / \
-                 2 * math.sin(math.radians(car_angle[0]))
+        2 * math.sin(math.radians(car_angle[0]))
 
     if car_face >= WINDOW_WIDTH:
         car_vel[0] = -car_vel[0]

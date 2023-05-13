@@ -1,20 +1,22 @@
 # Make Directories Stable :
+import numpy as np
+import math
+from Sounds import *
+import pygame
+from Collision import *
+from Textures import *
+from Rectangles import *
+from OpenGL.GLUT import *
+from OpenGL.GLU import *
+from OpenGL.GL import *
 import os
-dir = os.path.dirname(__file__).rstrip('\/core')    # get dir of "main.py" and make "FORSA-GAME" as current directory. 
+# get dir of "main.py" and make "FORSA-GAME" as current directory.
+dir = os.path.dirname(__file__).rstrip('\/core')
 if os.name == "posix" and not (dir.startswith('/')):  # if linux
     dir = "/" + dir
 os.chdir(dir)
 
 # Import Modules :
-from OpenGL.GL import *
-from OpenGL.GLU import *
-from OpenGL.GLUT import *
-import math, numpy as np
-from Rectangles import *
-from Textures import *
-from Collision import *
-import pygame
-from Sounds import *
 
 # WINDOW PROPERTIES
 WINDOW_WIDTH, WINDOW_HEIGHT = 1200, 900
@@ -101,16 +103,17 @@ def drawState(carObj, texture_index):
 # * ===============================================  Start & End  ========================================== * #
 
 
-# signal 
+# signal
 start = 1
 
 # start buttom size :
 button_width = 120
 button_height = 60
 
-start_button = Rectangle(button_width, button_height, \
-                         (WINDOW_WIDTH/2)-(button_width/2), \
+start_button = Rectangle(button_width, button_height,
+                         (WINDOW_WIDTH/2)-(button_width/2),
                          (WINDOW_HEIGHT/2)-(button_height/2)+100)
+
 
 def draw_start():
     world.draw_texture(14)
@@ -121,11 +124,11 @@ def MouseMotion(button, state, x, y):
     global start
     # handle click process at start button :
 
-    if start == 1 :
+    if start == 1:
         if start_button.left <= x <= start_button.right and \
                 WINDOW_HEIGHT-start_button.top <= y <= WINDOW_HEIGHT-start_button.bottom and \
                 button == GLUT_LEFT_BUTTON:
-            #glDeleteTextures(2, texture_names)
+            # glDeleteTextures(2, texture_names)
             start = 0
 
 
@@ -152,7 +155,8 @@ def draw():
         j = 2
         for i in obs_list:
             drawState(i, j)
-            obstacle_collision(i, car_pos, car_vel, car_angle, CAR_LENGTH, CAR_WIDTH, game_over)
+            obstacle_collision(i, car_pos, car_vel, car_angle,
+                               CAR_LENGTH, CAR_WIDTH, game_over)
             j += 1
 
         # * ========================= Main car ========================= * #
@@ -272,5 +276,6 @@ def main():
     init()
     load_setup_textures()
     glutMainLoop()
+
 
 main()
