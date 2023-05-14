@@ -65,7 +65,7 @@ def load_setup_textures():
     loadHelper("World Assets/start.png", 14)
     loadHelper("World Assets/start-button.png", 15)
 
-    loadHelper("World Assets/image.png", 16)
+    loadHelper("World Assets/winner.png", 16)
     loadHelper("World Assets/loser.png", 17)
     loadHelper("World Assets/level-up.png", 18)
     loadHelper("World Assets/play-again.png", 19)
