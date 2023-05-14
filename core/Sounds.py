@@ -16,9 +16,6 @@ button_sound = pygame.mixer.Sound(
 movement_sound = pygame.mixer.Sound(
     "Sounds Assets/Car Driving Sound Effect.mp3")
 
-calcson = pygame.mixer.Sound(
-    "Sounds Assets/calcson.wav")
-
 # crash_car=pygame.mixer.Sound("Sounds Assets/car_crash_car.wav")
 
 # crash_wall=pygame.mixer.Sound("Sounds Assets/car_crash_wall.wav")
