@@ -42,6 +42,7 @@ game_over = [0]
 
 # * =================================== Init PROJECTION ===================================== * #
 
+
 def init():
     glClearColor(0.0, 0.0, 0.0, 0.0)
     glMatrixMode(GL_PROJECTION)
