@@ -8,7 +8,7 @@ os.chdir(dir)
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
-import math, numpy as np, time
+import math, numpy as np
 from Rectangles import *
 from Textures import *
 from Collision import *
@@ -24,8 +24,8 @@ MIDDLE_ROAD = (250, 150)
 UPPER_LEFT_ROAD_WIDTH = UPPER_RIGHT_ROAD_WIDTH = 250
 
 # CAR PROPERTIES
-MAX_CAR_SPEED= 2
-CAR_ROTATION_SPEED = 2
+MAX_CAR_SPEED=.2
+CAR_ROTATION_SPEED = .2
 CAR_WIDTH = 80
 CAR_LENGTH = 40
 
@@ -132,17 +132,12 @@ def draw_start():
 
 def draw_end():
     if end == 1 : # winner
-        movement_sound.stop()
-        win.play()
         world.draw_texture(16)
         continue_button.draw_texture(18)
 
-
     if end == 0 : # loser
-        movement_sound.stop()
-        lost.play()
         world.draw_texture(17)
-        continue_button.draw_texture(18)
+        continue_button.draw_texture(19)
 
     quit_button.draw_texture(20)
 
@@ -169,22 +164,14 @@ def MouseMotion(click, state, x, y):
 
     if start == 1 :
         if click_signal(start_button, click, x, y) :
-            button_sound.play()
             start = 0
-            time.sleep(0.5)
-            
+
     if end == 1 or end == 0 :
         if click_signal(quit_button, click, x, y) : # Quit
-            pygame.mixer.music.stop()
             glutDestroyWindow(glutGetWindow())
-            time.sleep(0.5)
-            button_sound.play()
 
         elif click_signal(continue_button, click, x, y) : # play-again or level-up
-            pygame.mixer.music.stop()
-            time.sleep(0.5)
-            button_sound.play()
-            reset_game()
+            reset_game()  
             end = None  # back again to gameplay
 
 
@@ -235,8 +222,8 @@ def draw():
         if 'up' in keys_pressed:
             car_vel[0] += CAR_SPEED * math.cos(math.radians(car_angle[0]))
             car_vel[1] += CAR_SPEED * math.sin(math.radians(car_angle[0]))
-            movement_sound.play()
 
+            movement_sound.play()
         if 'up' not in keys_pressed:
             movement_sound.stop()
 
