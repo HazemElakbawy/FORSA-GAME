@@ -40,6 +40,7 @@ obstacle_speed = 0.2  # Changes on linux
 game_over = [0]
 
 
+
 # * =================================== Init PROJECTION ===================================== * #
 
 

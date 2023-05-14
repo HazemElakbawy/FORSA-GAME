@@ -65,7 +65,6 @@ def load_setup_textures():
     loadHelper("World Assets/Final-Start-Screen.jpg", 14)
     loadHelper("World Assets/Start Button.png", 15)
 
-
     loadHelper("World Assets/Win Screen.png", 16)
     loadHelper("World Assets/Lose Screen.png", 17)
     loadHelper("World Assets/Level UP Button.png", 18)

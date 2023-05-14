@@ -24,6 +24,7 @@ class Rectangle:
         glEnd()
 
 
+
 class MainCar:
     def __init__(self, x, y, trans_x, trans_y, theta, rgb):
         self.x = x
