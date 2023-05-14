@@ -19,7 +19,7 @@ import pygame
 """
 
 """textures:world , main car , 12 cars"""
-textureIdentifiers = [i for i in range(16)]
+textureIdentifiers = [i for i in range(21)]
 
 
 def setupHelper(texture_string, textureIdentifier, width, height):
@@ -64,6 +64,12 @@ def load_setup_textures():
     #
     loadHelper("World Assets/start.png", 14)
     loadHelper("World Assets/start-button.png", 15)
+
+    loadHelper("World Assets/winner.png", 16)
+    loadHelper("World Assets/loser.png", 17)
+    loadHelper("World Assets/level-up.png", 18)
+    loadHelper("World Assets/play-again.png", 19)
+    loadHelper("World Assets/quit.png", 20)
 
     loadHelper("World Assets/porche_911.png", 1)
     loadHelper("World Assets/world.png", 0)

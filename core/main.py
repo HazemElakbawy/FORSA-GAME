@@ -24,8 +24,8 @@ MIDDLE_ROAD = (250, 150)
 UPPER_LEFT_ROAD_WIDTH = UPPER_RIGHT_ROAD_WIDTH = 250
 
 # CAR PROPERTIES
-MAX_CAR_SPEED=4
-CAR_ROTATION_SPEED = 3
+MAX_CAR_SPEED=.2
+CAR_ROTATION_SPEED = .2
 CAR_WIDTH = 80
 CAR_LENGTH = 40
 
@@ -101,41 +101,91 @@ def drawState(carObj, texture_index):
 
 # * ===============================================  Start & End  ========================================== * #
 
+# signal
+start = 1     # start = 1 : mean (Still At Start) , start = 0 : mean (Enter gameplay)
+end   = None  # end = 1 : when win , end = 0 : when lose
 
-# signal 
-start = 1
 
-# start buttom size :
+# buttons properties
 button_width = 120
-button_height = 60
+button_height = 40
 
-start_button = Rectangle(button_width, button_height, (WINDOW_WIDTH-button_width)/2, (WINDOW_HEIGHT-button_height)/2 +100)
+
+# start view buttons
+start_button = Rectangle(button_width, button_height,
+                         (WINDOW_WIDTH/2)-(button_width/2),
+                         (WINDOW_HEIGHT/2)-(button_height/2)+100)
+
+# end view buttons
+continue_button = Rectangle(button_width, button_height, 
+                            (WINDOW_WIDTH/2)-(10+button_width),
+                            (WINDOW_HEIGHT/2)-(button_height/2)+100)
+
+quit_button = Rectangle(button_width, button_height,(WINDOW_WIDTH/2)+10,
+                        (WINDOW_HEIGHT/2)-(button_height/2)+100)
+
 
 def draw_start():
     world.draw_texture(14)
     start_button.draw_texture(15)
 
 
-def MouseMotion(button, state, x, y):
+def draw_end():
+    if end == 1 : # winner
+        world.draw_texture(16)
+        continue_button.draw_texture(18)
+
+    if end == 0 : # loser
+        world.draw_texture(17)
+        continue_button.draw_texture(19)
+
+    quit_button.draw_texture(20)
+
+
+# section : handle click buttons process
+def reset_game():
+    # reset main car
+    car_angle[0] = 0
+    car_vel[0] = car_vel[1] = 0
+    car_pos[0], car_pos[1] = 100, 250
+
+
+# function that detect clicking at any button
+def click_signal(button, click_type, x, y) : 
+    if button.left <= x <= button.right and \
+       WINDOW_HEIGHT-button.top <= y <= WINDOW_HEIGHT-button.bottom and \
+       click_type == GLUT_LEFT_BUTTON:
+        return True
+
+
+def MouseMotion(click, state, x, y):
     global start
-    # handle click process at start button :
+    global end
 
     if start == 1 :
-        if start_button.left <= x <= start_button.right and \
-                WINDOW_HEIGHT-start_button.top <= y <= WINDOW_HEIGHT-start_button.bottom and \
-                button == GLUT_LEFT_BUTTON:
-            #glDeleteTextures(2, texture_names)
+        if click_signal(start_button, click, x, y) :
             start = 0
+
+    if end == 1 or end == 0 :
+        if click_signal(quit_button, click, x, y) : # Quit
+            glutDestroyWindow(glutGetWindow())
+
+        elif click_signal(continue_button, click, x, y) : # play-again or level-up
+            reset_game()  
+            end = None  # back again to gameplay
 
 
 # * ===============================================  DRAW FUNCTION ========================================== * #
 
 def draw():
-    global car_pos, car_angle, car_vel, keys_pressed, obstacle_speed, game_over
+    global car_pos, car_angle, car_vel, keys_pressed, obstacle_speed, game_over, end
     glClear(GL_COLOR_BUFFER_BIT)
 
     if start == 1:
         draw_start()
+
+    elif end == 1 or end == 0 :
+        draw_end()
 
     else:
         drawTextures((1, 1, 1), world)
@@ -151,7 +201,8 @@ def draw():
         j = 2
         for i in obs_list:
             drawState(i, j)
-            obstacle_collision(i, car_pos, car_vel, car_angle, CAR_LENGTH, CAR_WIDTH, game_over)
+            if obstacle_collision(i, car_pos, car_vel, car_angle, CAR_LENGTH, CAR_WIDTH, game_over) : # if car collided three times
+                end = 0
             j += 1
 
         # * ========================= Main car ========================= * #
@@ -192,9 +243,13 @@ def draw():
         car_vel[1] *= MAX_CAR_SPEED / (1 + MAX_CAR_SPEED)
 
 
-    # Collision detection to the side walls
-    wall_collision(car_pos, car_vel, car_angle, CAR_LENGTH, CAR_WIDTH,game_over)
-    arrival_line(car_pos, CAR_LENGTH)
+        # Collision detection to the side walls
+        if wall_collision(car_pos, car_vel, car_angle, CAR_LENGTH, CAR_WIDTH,game_over) : # if car collided three times
+            end = 0
+        
+        if arrival_line(car_pos, CAR_LENGTH) : # if car reach parking 
+            obstacle_speed+=2000 # increase helper car speed
+            end = 1
 
 
     glutSwapBuffers()

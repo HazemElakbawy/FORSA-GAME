@@ -24,8 +24,8 @@ def obstacle_collision(ob, car_pos, car_vel, car_angle, CAR_LENGTH, CAR_WIDTH, g
         game_over[0] += 1
 
     if game_over[0] == 3:
-       print('game_over')
        game_over[0] = 0
+       return True
 
 
 
@@ -115,8 +115,8 @@ def wall_collision(car_pos, car_vel, car_angle, CAR_LENGTH, CAR_WIDTH,game_over)
         game_over[0] += 1
 
     if game_over[0] == 3:
-             print('game_over')
              game_over[0] = 0
+             return True
 
 
 def arrival_line(car_pos, CAR_LENGTH):
@@ -127,7 +127,9 @@ def arrival_line(car_pos, CAR_LENGTH):
     if WINDOW_HEIGHT - 35 <= car_top:
         car_pos[1] = WINDOW_HEIGHT - 35 - CAR_LENGTH / 2
         win.play()
+        return True
 
     elif WINDOW_HEIGHT - 35 <= car_bottom:
         car_pos[1] = WINDOW_HEIGHT - 35 - CAR_LENGTH / 2
         win.play()
+        return True
