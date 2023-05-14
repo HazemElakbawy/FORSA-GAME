@@ -1,22 +1,13 @@
-# Make Directories Stable :
-import numpy as np
-import math
-from Sounds import *
-import pygame
-from Collision import *
-from Textures import *
-from Rectangles import *
-from OpenGL.GLUT import *
-from OpenGL.GLU import *
-from OpenGL.GL import *
 import os
-# get dir of "main.py" and make "FORSA-GAME" as current directory.
-dir = os.path.dirname(__file__).rstrip('\/core')
-if os.name == "posix" and not (dir.startswith('/')):  # if linux
-    dir = "/" + dir
-os.chdir(dir)
-
-# Import Modules :
+from OpenGL.GL import *
+from OpenGL.GLU import *
+from OpenGL.GLUT import *
+import math, numpy as np
+from Rectangles import *
+from Textures import *
+from Collision import *
+import pygame
+from sounds import *
 
 # WINDOW PROPERTIES
 WINDOW_WIDTH, WINDOW_HEIGHT = 1200, 900
@@ -27,18 +18,20 @@ MIDDLE_ROAD = (250, 150)
 UPPER_LEFT_ROAD_WIDTH = UPPER_RIGHT_ROAD_WIDTH = 250
 
 # CAR PROPERTIES
-
+MAX_CAR_SPEED=4
+CAR_ROTATION_SPEED = 3
 CAR_WIDTH = 80
 CAR_LENGTH = 40
-CAR_SPEED = 0.06
-CAR_ROTATION_SPEED = 0.8
+
+
+
+CAR_SPEED = 1
 time_interval = 1
 keys_pressed = set()
 car_pos = [100, 250]
 car_angle = [0.0]
 car_vel = [0.0, 0.0]
 obstacle_speed = 0.2  # Changes on linux
-
 game_over = [0]
 
 # * =================================== Init PROJECTION ===================================== * #
@@ -103,17 +96,14 @@ def drawState(carObj, texture_index):
 # * ===============================================  Start & End  ========================================== * #
 
 
-# signal
+# signal 
 start = 1
 
 # start buttom size :
 button_width = 120
 button_height = 60
 
-start_button = Rectangle(button_width, button_height,
-                         (WINDOW_WIDTH/2)-(button_width/2),
-                         (WINDOW_HEIGHT/2)-(button_height/2)+100)
-
+start_button = Rectangle(button_width, button_height, (WINDOW_WIDTH-button_width)/2, (WINDOW_HEIGHT-button_height)/2 +100)
 
 def draw_start():
     world.draw_texture(14)
@@ -124,11 +114,11 @@ def MouseMotion(button, state, x, y):
     global start
     # handle click process at start button :
 
-    if start == 1:
+    if start == 1 :
         if start_button.left <= x <= start_button.right and \
                 WINDOW_HEIGHT-start_button.top <= y <= WINDOW_HEIGHT-start_button.bottom and \
                 button == GLUT_LEFT_BUTTON:
-            # glDeleteTextures(2, texture_names)
+            #glDeleteTextures(2, texture_names)
             start = 0
 
 
@@ -151,12 +141,11 @@ def draw():
                     car_Obj_2_0, car_Obj_2_1, car_Obj_2_2,
                     car_Obj_3_0, car_Obj_3_1, car_Obj_3_2,
                     car_Obj_4_0, car_Obj_4_1, car_Obj_4_2]
-
+        car = MainCar(CAR_WIDTH, CAR_LENGTH, car_pos[0], car_pos[1], car_angle[0], [0.6, 0.8, 0.5])
         j = 2
         for i in obs_list:
             drawState(i, j)
-            obstacle_collision(i, car_pos, car_vel, car_angle,
-                               CAR_LENGTH, CAR_WIDTH, game_over)
+            obstacle_collision(i, car_pos, car_vel, car_angle, CAR_LENGTH, CAR_WIDTH, game_over)
             j += 1
 
         # * ========================= Main car ========================= * #
@@ -176,6 +165,7 @@ def draw():
         if 'up' in keys_pressed:
             car_vel[0] += CAR_SPEED * math.cos(math.radians(car_angle[0]))
             car_vel[1] += CAR_SPEED * math.sin(math.radians(car_angle[0]))
+
             movement_sound.play()
         if 'up' not in keys_pressed:
             movement_sound.stop()
@@ -192,15 +182,14 @@ def draw():
 
         car_pos[0] += car_vel[0]
         car_pos[1] += car_vel[1]
-        car_vel[0] *= 0.98
-        car_vel[1] *= 0.98
+        car_vel[0] *= MAX_CAR_SPEED / (1 + MAX_CAR_SPEED)
+        car_vel[1] *= MAX_CAR_SPEED / (1 + MAX_CAR_SPEED)
+
 
     # Collision detection to the side walls
-    wall_collision(car_pos, car_vel, car_angle, CAR_LENGTH, CAR_WIDTH)
+    wall_collision(car_pos, car_vel, car_angle, CAR_LENGTH, CAR_WIDTH,game_over)
     arrival_line(car_pos, CAR_LENGTH)
 
-    car = MainCar(CAR_WIDTH, CAR_LENGTH,
-                  car_pos[0], car_pos[1], car_angle[0], [0.6, 0.8, 0.5])
 
     glutSwapBuffers()
 
@@ -255,6 +244,10 @@ def keyboard_up(key, x, y):
         keys_pressed.remove('notbase')
         print(keys_pressed)
 
+    elif key == b'c':
+        keys_pressed.remove('calcson')
+
+
 
 def Timer(v):
     draw()
@@ -278,4 +271,10 @@ def main():
     glutMainLoop()
 
 
+current_dir = os.getcwd().strip('\/core')
+
+if os.name == "posix" and not (current_dir.startswith('/')):  # if linux
+    current_dir = "/" + current_dir
+
+os.chdir(current_dir)
 main()
