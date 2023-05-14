@@ -8,13 +8,13 @@ start_sound = pygame.mixer.Sound(
     "Sounds Assets/start_car.wav")
 
 back_sound = pygame.mixer.Sound(
-    "Sounds Assets/back_sound_mp3cut.net.wav")
+    "Sounds Assets/Reverse car SE MOD.mp3")
 
 button_sound = pygame.mixer.Sound(
     "Sounds Assets/button.wav")
 
 movement_sound = pygame.mixer.Sound(
-    "Sounds Assets/Porsche Gt3.mp3")
+    "Sounds Assets/Car Driving Sound Effect.mp3")
 
 calcson = pygame.mixer.Sound(
     "Sounds Assets/calcson.wav")

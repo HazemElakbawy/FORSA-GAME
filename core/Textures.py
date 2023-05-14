@@ -62,14 +62,14 @@ def load_setup_textures():
     glGenTextures(len(textureIdentifiers), textureIdentifiers)
     # TODO: Load all textures here
     #
-    loadHelper("World Assets/start.png", 14)
-    loadHelper("World Assets/start-button.png", 15)
+    loadHelper("World Assets/Final-Start-Screen.jpg", 14)
+    loadHelper("World Assets/Start Button.png", 15)
 
-    loadHelper("World Assets/winner.png", 16)
-    loadHelper("World Assets/loser.png", 17)
-    loadHelper("World Assets/level-up.png", 18)
-    loadHelper("World Assets/play-again.png", 19)
-    loadHelper("World Assets/quit.png", 20)
+    loadHelper("World Assets/Win Screen.png", 16)
+    loadHelper("World Assets/Lose Screen.png", 17)
+    loadHelper("World Assets/Level UP Button.png", 18)
+    loadHelper("World Assets/Final Restart Button.png", 19)
+    loadHelper("World Assets/Exit Button.png", 20)
 
     loadHelper("World Assets/porche_911.png", 1)
     loadHelper("World Assets/world.png", 0)

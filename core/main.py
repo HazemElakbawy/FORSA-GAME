@@ -1,6 +1,7 @@
 # Make Directories Stable :
 import os
-dir = os.path.dirname(__file__).rstrip('\/core')    # get dir of "main.py" and make "FORSA-GAME" as current directory. 
+
+dir = os.path.dirname(__file__).rstrip('\/core')  # get dir of "main.py" and make "FORSA-GAME" as current directory.
 if os.name == "posix" and not (dir.startswith('/')):  # if linux
     dir = "/" + dir
 os.chdir(dir)
@@ -8,7 +9,7 @@ os.chdir(dir)
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
-import math, numpy as np
+import math, numpy as np, time
 from Rectangles import *
 from Textures import *
 from Collision import *
@@ -24,12 +25,10 @@ MIDDLE_ROAD = (250, 150)
 UPPER_LEFT_ROAD_WIDTH = UPPER_RIGHT_ROAD_WIDTH = 250
 
 # CAR PROPERTIES
-MAX_CAR_SPEED=.2
-CAR_ROTATION_SPEED = .2
+MAX_CAR_SPEED = 2
+CAR_ROTATION_SPEED = 2
 CAR_WIDTH = 80
 CAR_LENGTH = 40
-
-
 
 CAR_SPEED = 1
 time_interval = 1
@@ -39,6 +38,7 @@ car_angle = [0.0]
 car_vel = [0.0, 0.0]
 obstacle_speed = 0.2  # Changes on linux
 game_over = [0]
+
 
 # * =================================== Init PROJECTION ===================================== * #
 
@@ -102,27 +102,25 @@ def drawState(carObj, texture_index):
 # * ===============================================  Start & End  ========================================== * #
 
 # signal
-start = 1     # start = 1 : mean (Still At Start) , start = 0 : mean (Enter gameplay)
-end   = None  # end = 1 : when win , end = 0 : when lose
-
+start = 1  # start = 1 : mean (Still At Start) , start = 0 : mean (Enter gameplay)
+end = None  # end = 1 : when win , end = 0 : when lose
 
 # buttons properties
 button_width = 120
 button_height = 40
 
-
 # start view buttons
 start_button = Rectangle(button_width, button_height,
-                         (WINDOW_WIDTH/2)-(button_width/2),
-                         (WINDOW_HEIGHT/2)-(button_height/2)+100)
+                         (WINDOW_WIDTH / 2) - (button_width / 2),
+                         (WINDOW_HEIGHT / 2) - (button_height / 2) + 100)
 
 # end view buttons
-continue_button = Rectangle(button_width, button_height, 
-                            (WINDOW_WIDTH/2)-(10+button_width),
-                            (WINDOW_HEIGHT/2)-(button_height/2)+100)
+continue_button = Rectangle(button_width, button_height,
+                            (WINDOW_WIDTH / 2) - (10 + button_width),
+                            (WINDOW_HEIGHT / 2) - (button_height / 2) + 100)
 
-quit_button = Rectangle(button_width, button_height,(WINDOW_WIDTH/2)+10,
-                        (WINDOW_HEIGHT/2)-(button_height/2)+100)
+quit_button = Rectangle(button_width, button_height, (WINDOW_WIDTH / 2) + 10,
+                        (WINDOW_HEIGHT / 2) - (button_height / 2) + 100)
 
 
 def draw_start():
@@ -131,11 +129,14 @@ def draw_start():
 
 
 def draw_end():
-    if end == 1 : # winner
+    if end == 1:  # winner
+        movement_sound.stop()
+        win.play()
         world.draw_texture(16)
         continue_button.draw_texture(18)
 
-    if end == 0 : # loser
+    if end == 0:  # loser
+        movement_sound.stop()
         world.draw_texture(17)
         continue_button.draw_texture(19)
 
@@ -151,10 +152,10 @@ def reset_game():
 
 
 # function that detect clicking at any button
-def click_signal(button, click_type, x, y) : 
+def click_signal(button, click_type, x, y):
     if button.left <= x <= button.right and \
-       WINDOW_HEIGHT-button.top <= y <= WINDOW_HEIGHT-button.bottom and \
-       click_type == GLUT_LEFT_BUTTON:
+            WINDOW_HEIGHT - button.top <= y <= WINDOW_HEIGHT - button.bottom and \
+            click_type == GLUT_LEFT_BUTTON:
         return True
 
 
@@ -162,16 +163,24 @@ def MouseMotion(click, state, x, y):
     global start
     global end
 
-    if start == 1 :
-        if click_signal(start_button, click, x, y) :
+    if start == 1:
+        if click_signal(start_button, click, x, y):
+            button_sound.play()
             start = 0
+            time.sleep(0.5)
 
-    if end == 1 or end == 0 :
-        if click_signal(quit_button, click, x, y) : # Quit
+    if end == 1 or end == 0:
+        if click_signal(quit_button, click, x, y):  # Quit
+            pygame.mixer.music.stop()
             glutDestroyWindow(glutGetWindow())
+            time.sleep(0.5)
+            button_sound.play()
 
-        elif click_signal(continue_button, click, x, y) : # play-again or level-up
-            reset_game()  
+        elif click_signal(continue_button, click, x, y):  # play-again or level-up
+            pygame.mixer.music.stop()
+            time.sleep(0.5)
+            button_sound.play()
+            reset_game()
             end = None  # back again to gameplay
 
 
@@ -184,13 +193,12 @@ def draw():
     if start == 1:
         draw_start()
 
-    elif end == 1 or end == 0 :
+    elif end == 1 or end == 0:
         draw_end()
 
     else:
-        drawTextures((1, 1, 1), world)
-        glClearColor(0.0, 0.0, 0.0, 0.0)
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+
+        glClear(GL_COLOR_BUFFER_BIT )
         drawTextures((1, 1, 1), world)
         # * ========================= Draw cars ========================= * #
         obs_list = [car_Obj_1_0, car_Obj_1_1, car_Obj_1_2,
@@ -201,20 +209,12 @@ def draw():
         j = 2
         for i in obs_list:
             drawState(i, j)
-            if obstacle_collision(i, car_pos, car_vel, car_angle, CAR_LENGTH, CAR_WIDTH, game_over) : # if car collided three times
+            if obstacle_collision(i, car_pos, car_vel, car_angle, CAR_LENGTH, CAR_WIDTH,
+                                  game_over):  # if car collided three times
                 end = 0
             j += 1
 
         # * ========================= Main car ========================= * #
-
-        if 'base' in keys_pressed:  # only for test
-            for i in obs_list:
-                i.car_Direction *= 0.99
-
-        if 'notbase' in keys_pressed:  # only for test
-            for i in obs_list:
-                i.car_Direction /= 0.99
-
         if 'left' in keys_pressed:
             car_angle[0] += CAR_ROTATION_SPEED
         if 'right' in keys_pressed:
@@ -222,8 +222,8 @@ def draw():
         if 'up' in keys_pressed:
             car_vel[0] += CAR_SPEED * math.cos(math.radians(car_angle[0]))
             car_vel[1] += CAR_SPEED * math.sin(math.radians(car_angle[0]))
-
             movement_sound.play()
+
         if 'up' not in keys_pressed:
             movement_sound.stop()
 
@@ -242,15 +242,14 @@ def draw():
         car_vel[0] *= MAX_CAR_SPEED / (1 + MAX_CAR_SPEED)
         car_vel[1] *= MAX_CAR_SPEED / (1 + MAX_CAR_SPEED)
 
-
         # Collision detection to the side walls
-        if wall_collision(car_pos, car_vel, car_angle, CAR_LENGTH, CAR_WIDTH,game_over) : # if car collided three times
+        if wall_collision(car_pos, car_vel, car_angle, CAR_LENGTH, CAR_WIDTH, game_over):  # if car collided three times
             end = 0
-        
-        if arrival_line(car_pos, CAR_LENGTH) : # if car reach parking 
-            obstacle_speed+=2000 # increase helper car speed
-            end = 1
 
+        if arrival_line(car_pos, CAR_LENGTH):  # if car reach parking
+            for i in obs_list:
+                i.car_Direction *= 2
+            end = 1
 
     glutSwapBuffers()
 
@@ -260,54 +259,27 @@ def keyboard(key, x, y):
 
     if key == b'a':
         keys_pressed.add('left')
-        # print(keys_pressed)
     elif key == b'd':
         keys_pressed.add('right')
-        # print(keys_pressed)
     elif key == b'w':
         keys_pressed.add('up')
-        # print(keys_pressed)
     elif key == b's':
         keys_pressed.add('down')
-        # print(keys_pressed)
-    elif key == b'q':
-        keys_pressed.add('base')
-        print(keys_pressed)
-    elif key == b'e':
-        keys_pressed.add('notbase')
-        print(keys_pressed)
     elif key == b'c':
         keys_pressed.add('calcson')
-
-
 def keyboard_up(key, x, y):
     global keys_pressed
 
     if key == b'a':
         keys_pressed.remove('left')
-        # print(keys_pressed)
-
     elif key == b'd':
         keys_pressed.remove('right')
-        # print(keys_pressed)
-
     elif key == b'w':
         keys_pressed.remove('up')
-        # print(keys_pressed)
-
     elif key == b's':
         keys_pressed.remove('down')
-        # print(keys_pressed)
-    elif key == b'q':
-        keys_pressed.remove('base')
-        print(keys_pressed)
-    elif key == b'e':
-        keys_pressed.remove('notbase')
-        print(keys_pressed)
-
     elif key == b'c':
         keys_pressed.remove('calcson')
-
 
 
 def Timer(v):
@@ -326,11 +298,10 @@ def main():
     glutKeyboardFunc(keyboard)
     glutKeyboardUpFunc(keyboard_up)
     glutMouseFunc(MouseMotion)
-    glutTimerFunc(time_interval, Timer, 50)
+    glutTimerFunc(time_interval, Timer, 1)
     init()
     load_setup_textures()
     glutMainLoop()
-
 
 
 main()
