@@ -25,12 +25,13 @@ MIDDLE_ROAD = (250, 150)
 UPPER_LEFT_ROAD_WIDTH = UPPER_RIGHT_ROAD_WIDTH = 250
 
 # CAR PROPERTIES
-MAX_CAR_SPEED = 2
+MAX_CAR_SPEED = 5
+d = 0.965
 CAR_ROTATION_SPEED = 2
 CAR_WIDTH = 80
 CAR_LENGTH = 40
 
-CAR_SPEED = 1
+CAR_SPEED = MAX_CAR_SPEED * (1-d)/d
 time_interval = 1
 keys_pressed = set()
 car_pos = [100, 250]
@@ -188,7 +189,7 @@ def MouseMotion(click, state, x, y):
 # * ===============================================  DRAW FUNCTION ========================================== * #
 
 def draw():
-    global car_pos, car_angle, car_vel, keys_pressed, obstacle_speed, game_over, end
+    global car_pos, car_angle, car_vel, keys_pressed, obstacle_speed, game_over, end,d
     glClear(GL_COLOR_BUFFER_BIT)
 
     if start == 1:
@@ -238,8 +239,8 @@ def draw():
 
         car_pos[0] += car_vel[0]
         car_pos[1] += car_vel[1]
-        car_vel[0] *= MAX_CAR_SPEED / (1 + MAX_CAR_SPEED)
-        car_vel[1] *= MAX_CAR_SPEED / (1 + MAX_CAR_SPEED)
+        car_vel[0] *= d
+        car_vel[1] *= d
 
         # Collision detection to the side walls
         if wall_collision(car_pos, car_vel, car_angle, CAR_LENGTH, CAR_WIDTH, game_over):  # if car collided three times
@@ -249,6 +250,7 @@ def draw():
             for i in obs_list:
                 i.car_Direction *= 5
             end = 1
+            game_over[0] = 0
 
 
     glutSwapBuffers()
